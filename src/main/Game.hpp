@@ -1,9 +1,13 @@
 #include <stdbool.h>
 
-class Game
+class IGame
 {
 public:
-	bool Init();
-	void Terminate();
-	void Loop();
+	virtual ~IGame() {};
+
+	virtual bool Init() 		= 0;
+	virtual void Terminate() 	= 0;
+	virtual void Loop() 		= 0;
 };
+
+IGame* CreateGame();

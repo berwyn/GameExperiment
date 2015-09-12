@@ -4,7 +4,7 @@
 
 int main()
 {	
-	Game* game = new Game();
+	IGame* game = CreateGame();
 	if(!game->Init())
 	{
 		std::cerr << "Failed to init, bailing!" << std::endl;
