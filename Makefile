@@ -22,4 +22,4 @@ shaders:
 
 osx: $(OBJS) $(OPENGL_OBJS) shaders
 	if [ ! -d 'build' ]; then mkdir build; fi; \
-	$(CC) $(OBJS) $(UNIX_INCLUDE_PATHS) $(UNIX_LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $(OSX_LINKER_FLAGS) -std=$(CSTD) -o $(OBJ_NAME)
+	$(CC) $(OBJS) $(OPENGL_OBJS) $(UNIX_INCLUDE_PATHS) $(UNIX_LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $(OSX_LINKER_FLAGS) -std=$(CSTD) -o $(OBJ_NAME)

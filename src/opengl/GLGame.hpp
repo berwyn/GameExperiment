@@ -1,6 +1,6 @@
 #include "../main/Game.hpp"
 
-class GLGame : IGame
+class GLGame : public IGame
 {
 public:
 	virtual bool Init() override;
@@ -9,4 +9,4 @@ public:
 	
 private:
 	GLFWwindow* window;
-}
+};
