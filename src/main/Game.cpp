@@ -3,7 +3,7 @@
 #include "Game.hpp"
 
 int main()
-{	
+{
 	IGame* game = CreateGame();
 	if(!game->Init())
 	{
