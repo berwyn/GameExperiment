@@ -1,1 +1,8 @@
 build/
+bin/
+obj/
+.vs/
+*.vcxproj*
+*.sdf
+*.opensdf
+*.sln
