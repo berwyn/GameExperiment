@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../main/Game.hpp"
 
 class GLGame : public IGame

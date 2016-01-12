@@ -7,8 +7,8 @@
 #include <GLFW/glfw3.h>
 #include <stdbool.h>
 
-#include "GLShader.hpp"
-#include "GLGame.hpp"
+#include "GLShader.h"
+#include "GLGame.h"
 
 IGame* CreateGame()
 {

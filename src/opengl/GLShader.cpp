@@ -1,4 +1,4 @@
-#include "GLShader.hpp"
+#include "GLShader.h"
 
 #include <stdio.h>
 #include <sys/mman.h>

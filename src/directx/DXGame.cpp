@@ -1,23 +1,22 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <dxgi.h>
 #include <strsafe.h>
 
 #include "../main/Logger.h"
+#include "../main/Engine.h"
+
 #include "DXGame.h"
 #include "UTFHelpers.h"
 
 static DXGame* instance;
 
+#pragma region IGAME
 IGame* CreateGame()
 {
 	if (instance == NULL)
 		instance = new DXGame();
 	return instance;
-}
-
-static LRESULT CALLBACK StaticWindowHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	return instance->StaticWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 bool DXGame::Init()
@@ -82,7 +81,6 @@ void DXGame::Loop()
 			DispatchMessage(&msg);
 			if (msg.message == WM_QUIT) destroyed = true;
 		}
-		Logger::GetInstance()->Debug(&std::string("Render loop"));
 	}
 }
 
@@ -91,10 +89,17 @@ void DXGame::Terminate()
 	DestroyWindow(windowHandle);
 }
 
+#pragma endregion
+
+#pragma region Win32
+
+static LRESULT CALLBACK StaticWindowHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	return instance->StaticWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
 LRESULT CALLBACK DXGame::StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	UNREFERENCED_PARAMETER(hwnd);
-	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 
 	switch (uMsg)
@@ -106,16 +111,37 @@ LRESULT CALLBACK DXGame::StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 
 		case WM_ACTIVATEAPP:
 		{
+			bool inForeground = wParam == TRUE;
+		} break;
 
+		case WM_PAINT:
+		{
+			static DWORD operation = WHITENESS;
+
+			PAINTSTRUCT paint;
+			HDC devCtxt = BeginPaint(hwnd, &paint);
+
+			int32_t x = paint.rcPaint.left;
+			int32_t y = paint.rcPaint.top;
+			int32_t height = paint.rcPaint.bottom - paint.rcPaint.top;
+			int32_t width = paint.rcPaint.right - paint.rcPaint.left;
+			PatBlt(devCtxt, x, y, width, height, operation);
+
+			EndPaint(hwnd, &paint);
+			
+			if(operation == WHITENESS)
+			{ operation = BLACKNESS; }
+			else
+			{ operation = WHITENESS; }
 		} break;
 
 		case WM_CLOSE:
 		{
-			DestroyWindow(windowHandle);
+			DestroyWindow(hwnd);
 			UnregisterClass(
 				windowClassName.c_str(),
 				moduleInstance);
-			destroyed = false;
+			destroyed = true;
 		} break;
 		
 		case WM_DESTROY:
@@ -158,3 +184,5 @@ bool DXGame::registerWindowClass()
 
 	return true;
 }
+
+#pragma endregion

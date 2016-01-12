@@ -26,5 +26,6 @@ private:
 	HICON hIcon;
 	WNDCLASS wndClass;
 	HWND windowHandle;
+
 	bool destroyed = false;
 };
