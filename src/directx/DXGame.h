@@ -1,10 +1,13 @@
+#pragma once
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
 #include <shellapi.h>
 #include <string>
 #include <stdbool.h>
 
-#include "../main/Game.hpp"
+#include "../main/Game.h"
 
 class DXGame : public IGame
 {
@@ -15,6 +18,7 @@ public:
 	virtual LRESULT CALLBACK StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 private:
+	const std::wstring windowClassName = L"GameExperimentWndClass";
 
 	virtual bool registerWindowClass();
 
@@ -22,6 +26,5 @@ private:
 	HICON hIcon;
 	WNDCLASS wndClass;
 	HWND windowHandle;
-	std::string windowClassName = "GameExperimentWndClass";
 	bool destroyed = false;
 };

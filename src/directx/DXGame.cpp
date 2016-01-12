@@ -2,8 +2,9 @@
 #include <dxgi.h>
 #include <strsafe.h>
 
-#include "DXGame.hpp"
-#include "UTFHelpers.hpp"
+#include "../main/Logger.h"
+#include "DXGame.h"
+#include "UTFHelpers.h"
 
 static DXGame* instance;
 
@@ -21,6 +22,8 @@ static LRESULT CALLBACK StaticWindowHandler(HWND hwnd, UINT uMsg, WPARAM wParam,
 
 bool DXGame::Init()
 {
+	moduleInstance = GetModuleHandle(NULL);
+
 	bool windowClassRegistered = registerWindowClass();
 	if (!windowClassRegistered) return windowClassRegistered;
 
@@ -35,10 +38,10 @@ bool DXGame::Init()
 	int width = rect.right - rect.left;
 	int height = rect.bottom - rect.top;
 
-	windowHandle = CreateWindow(
-		widen(windowClassName).c_str(),
+	windowHandle = CreateWindowEx(
+		0, windowClassName.c_str(),
 		L"GameExperiment",
-		WS_OVERLAPPEDWINDOW,
+		WS_OVERLAPPEDWINDOW|WS_VISIBLE,
 		x, y, width, height,
 		0, NULL, moduleInstance, 0);
 
@@ -79,6 +82,7 @@ void DXGame::Loop()
 			DispatchMessage(&msg);
 			if (msg.message == WM_QUIT) destroyed = true;
 		}
+		Logger::GetInstance()->Debug(&std::string("Render loop"));
 	}
 }
 
@@ -89,19 +93,31 @@ void DXGame::Terminate()
 
 LRESULT CALLBACK DXGame::StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(hwnd);
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 
 	switch (uMsg)
 	{
+		case WM_SIZE:
+		{
+
+		} break;
+
+		case WM_ACTIVATEAPP:
+		{
+
+		} break;
+
 		case WM_CLOSE:
 		{
 			DestroyWindow(windowHandle);
 			UnregisterClass(
-				widen(windowClassName).c_str(),
+				windowClassName.c_str(),
 				moduleInstance);
 			destroyed = false;
 		} break;
+		
 		case WM_DESTROY:
 		{
 			PostQuitMessage(0);
@@ -123,16 +139,15 @@ bool DXGame::registerWindowClass()
 	if (hIcon == NULL)
 		hIcon = ExtractIcon(moduleInstance, szExePath, 0);
 
-	wndClass.style = CS_DBLCLKS;
+	wndClass = {};
+	wndClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wndClass.lpfnWndProc = StaticWindowHandler;
-	wndClass.cbClsExtra = 0;
-	wndClass.cbWndExtra = 0;
 	wndClass.hInstance = moduleInstance;
 	wndClass.hIcon = hIcon;
 	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wndClass.lpszMenuName = NULL;
-	wndClass.lpszClassName = widen(windowClassName).c_str();
+	wndClass.lpszClassName = windowClassName.c_str();
 
 	if (!RegisterClass(&wndClass))
 	{
