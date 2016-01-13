@@ -15,7 +15,7 @@ project "Game"
 	filter "system:windows"
 		defines { "WIN32", "WINDOWS", "_WINDOWS", "_UNICODE", "UNICODE" }
 		removefiles { "src/opengl/**", "src/shader/*.glsl" }
-		links { "user32", "shell32", "dxgi" }
+		links { "ucrt", "user32", "shell32", "dxgi", "d3d11" }
 		
 	filter "system:macosx"
 		removefiles { "src/directx/**", "src/shader/*.hlsl" }

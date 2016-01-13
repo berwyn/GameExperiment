@@ -1,9 +1,10 @@
 #pragma once
 
-#include <stdint.h>
+#include <math.h>
 
 struct Canvas
 {
-    uint32_t width;
-    uint32_t height;
+    float_t width;
+    float_t height;
+	float_t scaleFactor;
 };

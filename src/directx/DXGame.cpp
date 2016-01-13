@@ -4,24 +4,35 @@
 #include <strsafe.h>
 
 #include "../main/Logger.h"
-#include "../main/Engine.h"
+#include "../main/engine/Engine.h"
 
 #include "DXGame.h"
 #include "UTFHelpers.h"
 
 static DXGame* instance;
+static std::aligned_storage<sizeof(DXGame), alignof(DXGame)>::type dxgameStorage;
 
 #pragma region IGAME
-IGame* CreateGame()
+IGame* CreateGame(Engine* engine)
 {
-	if (instance == NULL)
-		instance = new DXGame();
+	if (instance == nullptr)
+	{
+		instance = (DXGame*)&dxgameStorage;
+		new (&dxgameStorage) DXGame(engine);
+	}
+
 	return instance;
+}
+
+DXGame::DXGame(Engine* e)
+{
+	engine = e;
 }
 
 bool DXGame::Init()
 {
 	moduleInstance = GetModuleHandle(NULL);
+	swapChain = CreateDXGISwapChain();
 
 	bool windowClassRegistered = registerWindowClass();
 	if (!windowClassRegistered) return windowClassRegistered;
@@ -30,10 +41,11 @@ bool DXGame::Init()
 	int x = CW_USEDEFAULT;
 	int y = CW_USEDEFAULT;
 
-	int defaultWidth = 800;
-	int defaultHeight = 600;
+	int defaultWidth = engine->renderCanvas->width;
+	int defaultHeight = engine->renderCanvas->height;
 	SetRect(&rect, 0, 0, defaultWidth, defaultHeight);
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+
 	int width = rect.right - rect.left;
 	int height = rect.bottom - rect.top;
 
@@ -100,24 +112,33 @@ static LRESULT CALLBACK StaticWindowHandler(HWND hwnd, UINT uMsg, WPARAM wParam,
 
 LRESULT CALLBACK DXGame::StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	UNREFERENCED_PARAMETER(lParam);
-
 	switch (uMsg)
 	{
+		case WM_SIZING:
 		case WM_SIZE:
 		{
+			std::shared_ptr<Canvas> renderCanvas = engine->renderCanvas;
+			std::shared_ptr<Canvas> uiCanvas = engine->uiCanvas;
 
+			RECT windowRect;
+			GetWindowRect(windowHandle, &windowRect);
+			
+			uint32_t width = windowRect.right - windowRect.left;
+			uint32_t height = windowRect.bottom - windowRect.top;
+
+			renderCanvas->width = width * renderCanvas->scaleFactor;
+			renderCanvas->height = height * renderCanvas->scaleFactor;
+			uiCanvas->width = width * uiCanvas->scaleFactor;
+			uiCanvas->height = height * uiCanvas->scaleFactor;
 		} break;
 
 		case WM_ACTIVATEAPP:
 		{
-			bool inForeground = wParam == TRUE;
+			engine->inForeground = wParam == TRUE;
 		} break;
 
 		case WM_PAINT:
 		{
-			static DWORD operation = WHITENESS;
-
 			PAINTSTRUCT paint;
 			HDC devCtxt = BeginPaint(hwnd, &paint);
 
@@ -125,14 +146,6 @@ LRESULT CALLBACK DXGame::StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 			int32_t y = paint.rcPaint.top;
 			int32_t height = paint.rcPaint.bottom - paint.rcPaint.top;
 			int32_t width = paint.rcPaint.right - paint.rcPaint.left;
-			PatBlt(devCtxt, x, y, width, height, operation);
-
-			EndPaint(hwnd, &paint);
-			
-			if(operation == WHITENESS)
-			{ operation = BLACKNESS; }
-			else
-			{ operation = WHITENESS; }
 		} break;
 
 		case WM_CLOSE:
@@ -146,7 +159,7 @@ LRESULT CALLBACK DXGame::StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 		
 		case WM_DESTROY:
 		{
-			PostQuitMessage(0);
+			PostQuitMessage(1);
 		} break;
 	}
 

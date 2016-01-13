@@ -10,7 +10,8 @@
 
 int main()
 {
-	IGame* game = CreateGame();
+	Engine engine = Engine();
+	IGame* game = CreateGame(&engine);
 	if(!game->Init())
 	{
 		Logger::GetInstance()->Fatal(&std::string("Failed to init, bailing!"));
