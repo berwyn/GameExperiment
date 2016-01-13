@@ -11,4 +11,4 @@ struct SwapChain
 	ID3D11DeviceContext** deviceContext;
 };
 
-SwapChain* CreateDXGISwapChain();
+SwapChain* CreateDXGISwapChain(HWND);

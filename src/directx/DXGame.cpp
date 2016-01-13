@@ -32,7 +32,6 @@ DXGame::DXGame(Engine* e)
 bool DXGame::Init()
 {
 	moduleInstance = GetModuleHandle(NULL);
-	swapChain = CreateDXGISwapChain();
 
 	bool windowClassRegistered = registerWindowClass();
 	if (!windowClassRegistered) return windowClassRegistered;
@@ -79,6 +78,7 @@ bool DXGame::Init()
 		return false;
 	}
 
+	swapChain = CreateDXGISwapChain(windowHandle);
 	return true;
 }
 
