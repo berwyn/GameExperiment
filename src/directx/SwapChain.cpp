@@ -37,8 +37,8 @@ std::shared_ptr<SwapChain> CreateDXGISwapChain(HWND window)
 		NULL, NULL,
 		D3D11_SDK_VERSION,
 		&desc,
-		swapChain.swapChain, swapChain.device,
-		swapChain.featureLevel, swapChain.deviceContext);
+		&swapChain.swapChain, &swapChain.device,
+		swapChain.featureLevel, &swapChain.deviceContext);
 
 	switch (result)
 	{
