@@ -13,7 +13,7 @@ static DXGame* instance;
 static std::aligned_storage<sizeof(DXGame), alignof(DXGame)>::type dxgameStorage;
 
 #pragma region IGAME
-IGame* CreateGame(Engine* engine)
+IGame* CreateGame(std::shared_ptr<Engine> engine)
 {
 	if (instance == nullptr)
 	{
@@ -24,7 +24,7 @@ IGame* CreateGame(Engine* engine)
 	return instance;
 }
 
-DXGame::DXGame(Engine* e)
+DXGame::DXGame(std::shared_ptr<Engine> e)
 {
 	engine = e;
 }

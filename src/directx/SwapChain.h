@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <Windows.h>
 #include <d3d11.h>
 
@@ -11,4 +12,4 @@ struct SwapChain
 	ID3D11DeviceContext** deviceContext;
 };
 
-SwapChain* CreateDXGISwapChain(HWND);
+std::shared_ptr<SwapChain> CreateDXGISwapChain(HWND);

@@ -7,6 +7,7 @@
 #include <shellapi.h>
 #include <string>
 #include <stdbool.h>
+#include <memory>
 
 #include "../main/Game.h"
 #include "SwapChain.h"
@@ -14,7 +15,7 @@
 class DXGame : public IGame
 {
 public:
-	DXGame(Engine*);
+	DXGame(std::shared_ptr<Engine>);
 	virtual bool Init() override;
 	virtual void Loop() override;
 	virtual void Terminate() override;
@@ -26,8 +27,8 @@ private:
 
 	virtual bool registerWindowClass();
 
-	Engine* engine;
-	SwapChain* swapChain;
+	std::shared_ptr<Engine> engine;
+	std::shared_ptr<SwapChain> swapChain;
 
 	HINSTANCE moduleInstance;
 	HICON hIcon;

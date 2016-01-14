@@ -1,3 +1,4 @@
+#include <memory>
 #include <stdbool.h>
 #include "engine/Engine.h"
 
@@ -11,4 +12,4 @@ public:
 	virtual void Loop() = 0;
 };
 
-IGame* CreateGame(Engine*);
+IGame* CreateGame(std::shared_ptr<Engine>);
