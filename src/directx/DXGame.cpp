@@ -77,8 +77,9 @@ bool DXGame::Init()
 
 		return false;
 	}
-
-	swapChain = CreateDXGISwapChain(windowHandle);
+	
+	swapChain = { 0 };
+	CreateDXGISwapChain(swapChain.get(), windowHandle);
 	return true;
 }
 

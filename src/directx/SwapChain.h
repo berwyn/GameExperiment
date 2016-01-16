@@ -3,15 +3,20 @@
 #include <memory>
 #include <Windows.h>
 #include <d3d11.h>
+#include <dxgi1_2.h>
 
 #include "Utils.h"
 
 struct SwapChain
 {
-	ComPtr<IDXGISwapChain> swapChain;
+	ComPtr<IDXGIFactory1> factory;
+	ComPtr<IDXGIAdapter1> adapter;
+	ComPtr<IDXGIOutput1> output;
 	ComPtr<ID3D11Device> device;
-	ComPtr<D3D_FEATURE_LEVEL> featureLevel;
+	ComPtr<IDXGISwapChain> swapChain;
+	D3D_FEATURE_LEVEL* featureLevel;
 	ComPtr<ID3D11DeviceContext> deviceContext;
 };
 
-std::shared_ptr<SwapChain> CreateDXGISwapChain(HWND);
+HRESULT CreateDXGIDeviceAndAdapter(SwapChain*, HWND);
+HRESULT CreateDXGISwapChain(SwapChain*, HWND);
