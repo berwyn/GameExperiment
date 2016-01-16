@@ -78,7 +78,7 @@ bool DXGame::Init()
 		return false;
 	}
 	
-	swapChain = { 0 };
+	swapChain = std::make_shared<SwapChain>(SwapChain());
 	CreateDXGISwapChain(swapChain.get(), windowHandle);
 	return true;
 }

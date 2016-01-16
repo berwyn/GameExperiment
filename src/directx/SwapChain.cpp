@@ -58,7 +58,7 @@ HRESULT CreateDXGISwapChain(SwapChain* swapChain, HWND window)
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	desc.BufferCount = 2;
 	desc.OutputWindow = window;
-	desc.Windowed = FALSE;
+	desc.Windowed = TRUE;
 	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
 	HRESULT result = D3D11CreateDeviceAndSwapChain(
