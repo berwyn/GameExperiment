@@ -9,7 +9,7 @@ project "Game"
 	files { "src/**.h", "src/**.cpp", "src/shader/**" }
 	
 	filter "configurations:Debug"
-        defines { "DEBUG" }
+        	defines { "DEBUG" }
 		flags { "Symbols" }
 		
 	filter "system:windows"
