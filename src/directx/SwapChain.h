@@ -10,11 +10,11 @@
 struct SwapChain
 {
 	ComPtr<IDXGIFactory1> factory;
-	ComPtr<IDXGIAdapter1> adapter;
-	ComPtr<IDXGIOutput1> output;
+	ComPtr<IDXGIAdapter> adapter;
+	ComPtr<IDXGIOutput> output;
 	ComPtr<ID3D11Device> device;
 	ComPtr<IDXGISwapChain> swapChain;
-	D3D_FEATURE_LEVEL* featureLevel;
+	D3D_FEATURE_LEVEL featureLevel;
 	ComPtr<ID3D11DeviceContext> deviceContext;
 };
 

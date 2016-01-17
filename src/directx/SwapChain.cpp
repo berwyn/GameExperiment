@@ -1,7 +1,7 @@
 #include "SwapChain.h"
 #include "../main/Logger.h"
 
-HRESULT CreateDXGIDeviceAndAdatper(SwapChain* swapChain, HWND windowHandle)
+HRESULT CreateDXGIDeviceAndAdapter(SwapChain* swapChain, HWND windowHandle)
 {
 	auto hr = CreateDXGIFactory1(IID_PPV_ARGS(&swapChain->factory));
 
@@ -29,13 +29,23 @@ HRESULT CreateDXGIDeviceAndAdatper(SwapChain* swapChain, HWND windowHandle)
 			{
 				swapChain->adapter = adapter;
 				swapChain->output = output;
-				return S_OK;
+				
+				hr = D3D11CreateDevice(
+					swapChain->adapter,
+					D3D_DRIVER_TYPE_UNKNOWN, NULL,
+					NULL,
+					NULL, NULL,
+					D3D11_SDK_VERSION,
+					&swapChain->device, &swapChain->featureLevel, &swapChain->deviceContext);
+
+				return hr;
 			}
 
 			output.Release();
 		}
 		adapter.Release();
 	}
+
 
 	return E_UNEXPECTED;
 }
@@ -61,17 +71,9 @@ HRESULT CreateDXGISwapChain(SwapChain* swapChain, HWND window)
 	desc.Windowed = TRUE;
 	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-	HRESULT result = D3D11CreateDeviceAndSwapChain(
-		NULL,
-		D3D_DRIVER_TYPE_HARDWARE, NULL,
-		NULL,
-		NULL, NULL,
-		D3D11_SDK_VERSION,
-		&desc,
-		&swapChain->swapChain, &swapChain->device,
-		swapChain->featureLevel, &swapChain->deviceContext);
+	auto hr = swapChain->factory->CreateSwapChain(swapChain->device, &desc, &swapChain->swapChain);
 
-	switch (result)
+	switch (hr)
 	{
 		default:
 			Logger::GetInstance()->Fatal(&std::string("DXGI Failed to create swapchain."));

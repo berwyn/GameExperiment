@@ -70,17 +70,22 @@ bool DXGame::Init()
 			(LPTSTR)&lpMsgBuf,
 			0, NULL);
 
-		// Display the error message and exit the process
-		MessageBox(NULL, (LPCTSTR)lpMsgBuf, TEXT("Error"), MB_OK);
-
+		Logger::GetInstance()->Fatal(&narrow((LPCTSTR)lpMsgBuf));
 		LocalFree(lpMsgBuf);
 
 		return false;
 	}
 	
 	swapChain = std::make_shared<SwapChain>(SwapChain());
-	CreateDXGISwapChain(swapChain.get(), windowHandle);
-	return true;
+	auto hr = CreateDXGIDeviceAndAdapter(swapChain.get(), windowHandle);
+
+	if (hr != S_OK)
+	{
+		return false;
+	}
+
+	hr = CreateDXGISwapChain(swapChain.get(), windowHandle);
+	return hr == S_OK;
 }
 
 void DXGame::Loop()
