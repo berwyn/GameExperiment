@@ -2,14 +2,20 @@
 #include <stdbool.h>
 #include "engine/Engine.h"
 
-class IGame
+class Game
 {
+
 public:
-	virtual ~IGame() {};
 
-	virtual bool Init() = 0;
-	virtual void Terminate() = 0;
-	virtual void Loop() = 0;
+	Game();
+
+	bool Init();
+	void Loop();
+	void Terminate();
+
+private:
+
+	std::unique_ptr<Engine> engine;
+	std::unique_ptr<IRenderer> renderer;
+
 };
-
-IGame* CreateGame(std::shared_ptr<Engine>);

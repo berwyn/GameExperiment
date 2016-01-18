@@ -1,14 +1,28 @@
 #include "Engine.h"
 
-Engine::Engine()
-{
-	Canvas _uiCanvas = Canvas{ 800.0f, 600.0f, 1.0f };
-	Canvas _renderCanvas = Canvas{ 800.0f, 600.0f, 1.0f };
+#ifdef WINDOWS
 
-	uiCanvas = std::make_shared<Canvas>(_uiCanvas);
-	renderCanvas = std::make_shared<Canvas>(_renderCanvas);
+#include "../../directx/DXRenderer.h"
+#define Renderer DXRenderer
+
+#else
+
+#include "../../opengl/GLRenderer.h"
+#define Renderer GLRenderer
+
+#endif
+
+Engine::Engine(){}
+
+bool Engine::Init()
+{
+	this->renderer = std::make_unique<Renderer>(Renderer(this));
 }
 
 void Engine::Frame()
+{
+}
+
+void Engine::Shutdown()
 {
 }

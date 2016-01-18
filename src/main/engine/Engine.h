@@ -2,18 +2,25 @@
 
 #include <memory>
 #include <stdint.h>
-#include "Canvas.h"
+
+#include "Renderer.h"
 
 class Engine
 {
-public:
-    std::shared_ptr<Canvas> renderCanvas;
-    std::shared_ptr<Canvas> uiCanvas;
-    
-	bool inForeground;
-	uint32_t frameLock;
-	uint32_t backgroundFrameLock;
 
-    Engine();
-    void Frame();
+public:
+
+	Engine();
+
+	bool ShouldHalt;
+	bool IsInErrorState;
+
+	bool Init();
+	void Frame();
+	void Shutdown();
+
+private:
+
+	std::unique_ptr<IRenderer> renderer;
+
 };

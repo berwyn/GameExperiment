@@ -77,5 +77,4 @@ void Logger::Fatal(std::string* msg)
 	buf << *msg;
 
 	std::cerr << buf.str() << std::endl;
-	exit(1);
 }

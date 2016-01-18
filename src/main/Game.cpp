@@ -8,15 +8,47 @@
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
 
-int main()
+int main(int argc, int* argv[])
 {
-	std::shared_ptr<Engine> engine = std::make_shared<Engine>(Engine());
-	IGame* game = CreateGame(engine);
-	if(!game->Init())
+	auto game = Game();
+	if(game.Init())
 	{
-		Logger::GetInstance()->Fatal(&std::string("Failed to init, bailing!"));
+		game.Loop();
 	}
-	game->Loop();
-	game->Terminate();
+	game.Terminate();
 	return 0;
+}
+
+bool Game::Init()
+{
+	auto engine = std::make_unique<Engine>(Engine());
+	if (!engine->Init())
+	{
+		Logger::GetInstance()->Fatal(&std::string("Failed to initialize engine"));
+		engine->ShouldHalt = true;
+		return false;
+	}
+	return true;
+}
+
+void Game::Loop()
+{
+	while (!engine->ShouldHalt)
+	{
+		// Do stuff with actors here
+		engine->Frame();
+	}
+}
+
+void Game::Terminate()
+{
+
+#ifdef DEBUG
+	if (engine->IsInErrorState)
+	{
+		// TODO: Shutdown GUI but wait for input before closing console
+	}
+#endif
+
+	engine->Shutdown();
 }

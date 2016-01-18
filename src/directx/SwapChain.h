@@ -1,11 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <Windows.h>
-#include <d3d11.h>
-#include <dxgi1_2.h>
 
-#include "Utils.h"
+#include "Windows.h"
 
 struct SwapChain
 {
