@@ -72,7 +72,7 @@ void DXRenderer::Draw()
 	// TODO: Draw into backbuffer, then present it
 }
 
-LRESULT CALLBACK DXRenderer::StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT DXRenderer::StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	return instance->windowProc(hwnd, uMsg, wParam, lParam);
 }
@@ -110,7 +110,7 @@ bool DXRenderer::registerWindowClass()
 	return true;
 }
 
-LRESULT CALLBACK DXRenderer::windowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT DXRenderer::windowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
