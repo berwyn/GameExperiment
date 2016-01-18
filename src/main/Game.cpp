@@ -9,6 +9,18 @@
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
 
+#ifdef WINDOWS
+
+#include "../directx/DXRenderer.h"
+#define Renderer DXRenderer
+
+#else
+
+#include "../opengl/GLRenderer.h"
+#define Renderer GLRenderer
+
+#endif
+
 int main(int argc, int* argv[])
 {
 	auto game = Game();
@@ -22,12 +34,13 @@ int main(int argc, int* argv[])
 
 Game::Game()
 {
-	engine = std::make_unique<Engine>();
+	engine = std::make_shared<Engine>();
+	renderer = std::make_shared<Renderer>(engine);
 }
 
 bool Game::Init()
 {
-	if (!engine->Init())
+	if (!engine->Init(renderer))
 	{
 		Logger::GetInstance()->Fatal(&std::string("Failed to initialize engine"));
 		return false;
@@ -42,7 +55,6 @@ void Game::Loop()
 		using namespace std::literals;
 		// TODO: Do real things here
 		engine->Frame();
-		std::this_thread::sleep_for(16ms);
 	}
 }
 

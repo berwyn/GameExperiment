@@ -13,7 +13,7 @@ class DXRenderer : public IRenderer
 
 public:
 
-	DXRenderer(Engine* engine);
+	DXRenderer(std::shared_ptr<Engine> engine);
 
 	bool Init(uint32_t width, uint32_t height) override;
 	void Draw() override;
@@ -28,8 +28,12 @@ public:
 private:
 
 	const std::wstring windowClassName = L"GameExperimentWndClass";
+	const DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	const uint32_t numBuffers = 2;
+
 	static DXRenderer* instance;
 
+	bool occluded;
 	HINSTANCE moduleInstance;
 	HICON icon;
 	WNDCLASS windowClass;
@@ -47,5 +51,6 @@ private:
 	bool registerWindowClass();
 	HRESULT createDXGIDeviceAndAdapter();
 	HRESULT createDXGISwapChain();
+	void fixBuffers();
 
 };

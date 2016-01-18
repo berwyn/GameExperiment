@@ -15,12 +15,12 @@ public:
 	bool ShouldHalt;
 	bool IsInErrorState;
 
-	bool Init();
+	bool Init(std::shared_ptr<IRenderer> renderer);
 	void Frame();
 	void Shutdown();
 
 private:
 
-	std::unique_ptr<IRenderer> renderer;
+	std::shared_ptr<IRenderer> renderer;
 
 };

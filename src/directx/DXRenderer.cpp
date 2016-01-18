@@ -1,3 +1,5 @@
+#include <thread>
+
 #include "DXRenderer.h"
 #include "UTFHelpers.h"
 #include "../main/Logger.h"
@@ -5,7 +7,7 @@
 // Forward declaration because c++ blows goats
 DXRenderer* DXRenderer::instance;
 
-DXRenderer::DXRenderer(Engine* engine) : IRenderer(engine)
+DXRenderer::DXRenderer(std::shared_ptr<Engine> engine) : IRenderer(engine)
 {
 	if (instance == nullptr)
 	{
@@ -17,6 +19,9 @@ DXRenderer::DXRenderer(Engine* engine) : IRenderer(engine)
 
 bool DXRenderer::Init(uint32_t width, uint32_t height)
 {
+	this->width = width;
+	this->height = height;
+
 	moduleInstance = GetModuleHandle(NULL);
 
 	bool windowClassRegistered = registerWindowClass();
@@ -75,6 +80,7 @@ bool DXRenderer::Init(uint32_t width, uint32_t height)
 
 void DXRenderer::Draw()
 {
+	using namespace std::literals;
 	MSG msg;
 	while (PeekMessage(&msg, windowHandle, 0, 0, PM_REMOVE))
 	{
@@ -86,8 +92,37 @@ void DXRenderer::Draw()
 		}
 	}
 
-	swapChain->Present(0, 0);
+	HRESULT hr;
+	if (occluded)
+	{
+		hr = swapChain->Present(0, DXGI_PRESENT_TEST);
+		if (hr != S_OK)
+		{
+			std::this_thread::sleep_for(16ms);
+			return;
+		}
+
+		occluded = false;
+	}
+
 	// TODO: Draw into backbuffer, then present it
+	hr = swapChain->Present(0, 0);
+
+	switch (hr)
+	{
+		case DXGI_STATUS_OCCLUDED:
+		{
+			occluded = true;
+		} break;
+
+		case DXGI_STATUS_MODE_CHANGED:
+		{
+			fixBuffers();
+		} break;
+
+		default:
+			return;
+	}
 }
 
 #pragma endregion
@@ -130,7 +165,7 @@ LRESULT DXRenderer::windowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 		case WM_SIZE:
 		case WM_SIZING:
 		{
-			GetWindowRect(windowHandle, &drawRect);
+			fixBuffers();
 		} break;
 
 		case WM_ACTIVATEAPP:
@@ -216,7 +251,7 @@ HRESULT DXRenderer::createDXGISwapChain()
 	desc.BufferDesc.Height = NULL;
 	desc.BufferDesc.RefreshRate.Numerator = 60;
 	desc.BufferDesc.RefreshRate.Denominator = 1;
-	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	desc.BufferDesc.Format = dxgiFormat;
 	desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
@@ -224,7 +259,7 @@ HRESULT DXRenderer::createDXGISwapChain()
 	desc.SampleDesc.Quality = D3D11_STANDARD_MULTISAMPLE_PATTERN;
 
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	desc.BufferCount = 2;
+	desc.BufferCount = numBuffers;
 	desc.OutputWindow = windowHandle;
 	desc.Windowed = TRUE;
 	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
@@ -246,6 +281,18 @@ HRESULT DXRenderer::createDXGISwapChain()
 		Logger::GetInstance()->Warn(&std::string("DXGI succeeded in a nonstandard way. HERE THERE BE DRAGONS!"));
 	case S_OK:
 		return S_OK;
+	}
+}
+
+void DXRenderer::fixBuffers()
+{
+	GetWindowRect(windowHandle, &drawRect);
+	this->width = drawRect.right - drawRect.left;
+	this->height = drawRect.bottom - drawRect.top;
+
+	if (swapChain != nullptr)
+	{
+		swapChain->ResizeBuffers(numBuffers, this->width, this->height, dxgiFormat, 0);
 	}
 }
 

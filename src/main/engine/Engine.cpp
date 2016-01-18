@@ -1,27 +1,15 @@
 #include "Engine.h"
 
-#ifdef WINDOWS
-
-#include "../../directx/DXRenderer.h"
-#define Renderer DXRenderer
-
-#else
-
-#include "../../opengl/GLRenderer.h"
-#define Renderer GLRenderer
-
-#endif
-
 Engine::Engine()
 {
 	ShouldHalt = false;
 	IsInErrorState = false;
-	renderer = std::make_unique<Renderer>(this);
 }
 
-bool Engine::Init()
+bool Engine::Init(std::shared_ptr<IRenderer> renderer)
 {
-	return renderer->Init(800, 600);
+	this->renderer = renderer;
+	return this->renderer->Init(800, 600);
 }
 
 void Engine::Frame()
