@@ -3,7 +3,7 @@
 #include "../main/Logger.h"
 
 // Forward declaration because c++ blows goats
-DXRenderer* DXRenderer::instance = nullptr;
+DXRenderer* DXRenderer::instance;
 
 DXRenderer::DXRenderer(Engine* engine) : IRenderer(engine)
 {
