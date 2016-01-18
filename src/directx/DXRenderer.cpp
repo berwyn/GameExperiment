@@ -25,6 +25,7 @@ bool DXRenderer::Init(uint32_t width, uint32_t height)
 	int x = CW_USEDEFAULT;
 	int y = CW_USEDEFAULT;
 
+	drawRect = { 0 };
 	SetRect(&drawRect, 0, 0, width, height);
 	AdjustWindowRect(&drawRect, WS_OVERLAPPEDWINDOW, false);
 
@@ -55,6 +56,8 @@ bool DXRenderer::Init(uint32_t width, uint32_t height)
 		LocalFree(lpMsgBuf);
 		return false;
 	}
+
+	return true;
 }
 
 void DXRenderer::Draw()

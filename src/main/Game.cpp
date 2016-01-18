@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <iostream>
+#include <thread>
 
 #include "Game.h"
 #include "Logger.h"
@@ -21,7 +22,7 @@ int main(int argc, int* argv[])
 
 Game::Game()
 {
-	engine = std::make_unique<Engine>(Engine());
+	engine = std::make_unique<Engine>();
 }
 
 bool Game::Init()
@@ -29,7 +30,6 @@ bool Game::Init()
 	if (!engine->Init())
 	{
 		Logger::GetInstance()->Fatal(&std::string("Failed to initialize engine"));
-		engine->ShouldHalt = true;
 		return false;
 	}
 	return true;
@@ -39,8 +39,10 @@ void Game::Loop()
 {
 	while (!engine->ShouldHalt)
 	{
-		// Do stuff with actors here
+		using namespace std::literals;
+		// TODO: Do real things here
 		engine->Frame();
+		std::this_thread::sleep_for(16ms);
 	}
 }
 

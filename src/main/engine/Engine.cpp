@@ -12,11 +12,15 @@
 
 #endif
 
-Engine::Engine(){}
+Engine::Engine()
+{
+	ShouldHalt = false;
+	IsInErrorState = false;
+	renderer = std::make_unique<Renderer>(this);
+}
 
 bool Engine::Init()
 {
-	renderer = std::make_unique<Renderer>(Renderer(this));
 	return renderer->Init(800, 600);
 }
 
