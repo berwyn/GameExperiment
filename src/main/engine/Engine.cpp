@@ -26,6 +26,7 @@ bool Engine::Init()
 
 void Engine::Frame()
 {
+	renderer->Draw();
 }
 
 void Engine::Shutdown()

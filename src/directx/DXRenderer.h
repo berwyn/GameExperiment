@@ -36,6 +36,16 @@ private:
 	HWND windowHandle;
 	RECT drawRect;
 
+	ComPtr<IDXGIFactory1> factory;
+	ComPtr<IDXGIAdapter> adapter;
+	ComPtr<IDXGIOutput> output;
+	ComPtr<ID3D11Device> device;
+	ComPtr<IDXGISwapChain> swapChain;
+	D3D_FEATURE_LEVEL featureLevel;
+	ComPtr<ID3D11DeviceContext> deviceContext;
+
 	bool registerWindowClass();
+	HRESULT createDXGIDeviceAndAdapter();
+	HRESULT createDXGISwapChain();
 
 };
