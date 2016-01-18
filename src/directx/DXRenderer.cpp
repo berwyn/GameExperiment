@@ -2,6 +2,9 @@
 #include "UTFHelpers.h"
 #include "../main/Logger.h"
 
+// Forward declaration because c++ blows goats
+DXRenderer* DXRenderer::instance = nullptr;
+
 DXRenderer::DXRenderer(Engine* engine) : IRenderer(engine)
 {
 	if (instance == nullptr)
@@ -22,19 +25,17 @@ bool DXRenderer::Init(uint32_t width, uint32_t height)
 	int x = CW_USEDEFAULT;
 	int y = CW_USEDEFAULT;
 
-	int defaultWidth = 800;
-	int defaultHeight = 600;
-	SetRect(&drawRect, 0, 0, defaultWidth, defaultHeight);
+	SetRect(&drawRect, 0, 0, width, height);
 	AdjustWindowRect(&drawRect, WS_OVERLAPPEDWINDOW, false);
 
-	int width = drawRect.right - drawRect.left;
-	int height = drawRect.bottom - drawRect.top;
+	int actualWidth = drawRect.right - drawRect.left;
+	int actualHeight = drawRect.bottom - drawRect.top;
 
 	windowHandle = CreateWindowEx(
 		0, windowClassName.c_str(),
 		L"GameExperiment",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-		x, y, width, height,
+		x, y, actualWidth, actualHeight,
 		0, NULL, moduleInstance, 0);
 
 	if (windowHandle == NULL)
@@ -70,11 +71,6 @@ void DXRenderer::Draw()
 	}
 
 	// TODO: Draw into backbuffer, then present it
-}
-
-LRESULT DXRenderer::StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	return instance->windowProc(hwnd, uMsg, wParam, lParam);
 }
 
 #pragma endregion

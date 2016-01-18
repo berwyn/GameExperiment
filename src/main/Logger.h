@@ -4,8 +4,9 @@
 
 class Logger
 {
+
 public:
-	inline static Logger* GetInstance() {return instance;}
+	inline static Logger* GetInstance() { return instance; }
 	void Log(std::string*);
 	void Debug(std::string*);
 	void Warn(std::string*);
@@ -14,4 +15,5 @@ public:
 
 private:
 	static Logger* instance;
+
 };

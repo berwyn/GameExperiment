@@ -18,9 +18,15 @@ public:
 	bool Init(uint32_t width, uint32_t height) override;
 	void Draw() override;
 
-	static LRESULT CALLBACK StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT CALLBACK windowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	
+	inline static LRESULT CALLBACK StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		return instance->windowProc(hwnd, uMsg, wParam, lParam);
+	};
 
 private:
+
 	const std::wstring windowClassName = L"GameExperimentWndClass";
 	static DXRenderer* instance;
 
@@ -31,5 +37,5 @@ private:
 	RECT drawRect;
 
 	bool registerWindowClass();
-	LRESULT CALLBACK windowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
 };

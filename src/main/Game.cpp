@@ -19,9 +19,13 @@ int main(int argc, int* argv[])
 	return 0;
 }
 
+Game::Game()
+{
+	engine = std::make_unique<Engine>(Engine());
+}
+
 bool Game::Init()
 {
-	auto engine = std::make_unique<Engine>(Engine());
 	if (!engine->Init())
 	{
 		Logger::GetInstance()->Fatal(&std::string("Failed to initialize engine"));

@@ -16,6 +16,5 @@ public:
 private:
 
 	std::unique_ptr<Engine> engine;
-	std::unique_ptr<IRenderer> renderer;
 
 };

@@ -16,7 +16,8 @@ Engine::Engine(){}
 
 bool Engine::Init()
 {
-	this->renderer = std::make_unique<Renderer>(Renderer(this));
+	renderer = std::make_unique<Renderer>(Renderer(this));
+	return renderer->Init(800, 600);
 }
 
 void Engine::Frame()
