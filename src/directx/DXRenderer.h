@@ -6,6 +6,7 @@
 
 #include "Windows.h"
 #include "../main/engine/Engine.h"
+#include "../main/engine/Renderer.h"
 
 class DXRenderer : public IRenderer
 {
