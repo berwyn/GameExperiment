@@ -20,7 +20,7 @@ static HRESULT WithMapped(const wchar_t* path, Func &&f)
 
 	if (mapHandle == nullptr)
 	{
-		auto err = GetLastErr();
+		auto err = GetLastError();
 		CloseHandle(fileHandle);
 		return HRESULT_FROM_WIN32(err);
 	}
@@ -32,7 +32,7 @@ static HRESULT WithMapped(const wchar_t* path, Func &&f)
 
 	if (memory == nullptr)
 	{
-		auto err = GetLastErr();
+		auto err = GetLastError();
 		CloseHandle(mapHandle);
 		CloseHandle(fileHandle);
 		return HRESULT_FROM_WIN32(err);

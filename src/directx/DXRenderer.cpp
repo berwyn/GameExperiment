@@ -263,6 +263,7 @@ HRESULT DXRenderer::createDXGISwapChain()
 	desc.OutputWindow = windowHandle;
 	desc.Windowed = TRUE;
 	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	auto hr = factory->CreateSwapChain(device, &desc, &swapChain);
 

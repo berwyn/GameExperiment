@@ -9,18 +9,26 @@ project "Game"
 	files { "src/**.h", "src/**.cpp", "src/shader/**" }
 	
 	filter "configurations:Debug"
-        	defines { "DEBUG" }
+        defines { "DEBUG" }
 		flags { "Symbols" }
 		
 	filter "system:windows"
 		defines { "WIN32", "WINDOWS", "_WINDOWS", "_UNICODE", "UNICODE" }
 		removefiles { "src/opengl/**", "src/shader/*.glsl" }
 
-	filter "files:**.hlsl"
+	filter "files:**.vs.hlsl"
 		buildcommands {
 			'fxc /Fo "%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso" /E "main" /T vs_5_0 /nologo %{file.relpath}'
 		}
+        
 		buildoutputs { '%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso' }
+
+    filter "files:**.ps.hlsl"
+        buildcommands {
+           'fxc /Fo "%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso" /E "main" /T ps_5_0 /nologo %{file.relpath}'
+        }
+        
+        buildoutputs { '%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso' }
 		
 	filter "system:macosx"
 		removefiles { "src/directx/**", "src/shader/*.hlsl" }
