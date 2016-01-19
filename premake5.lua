@@ -15,7 +15,12 @@ project "Game"
 	filter "system:windows"
 		defines { "WIN32", "WINDOWS", "_WINDOWS", "_UNICODE", "UNICODE" }
 		removefiles { "src/opengl/**", "src/shader/*.glsl" }
-		links { "ucrt", "user32", "shell32", "dxgi", "d3d11" }
+
+	filter "files:**.hlsl"
+		buildcommands {
+			'fxc /Fo "%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso" /E "main" /T vs_5_0 /nologo %{file.relpath}'
+		}
+		buildoutputs { '%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso' }
 		
 	filter "system:macosx"
 		removefiles { "src/directx/**", "src/shader/*.hlsl" }
