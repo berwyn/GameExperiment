@@ -1,5 +1,6 @@
 #include "Color.h"
 
-void main(PixelInput input)
+float4 main(PixelInput input) : SV_TARGET
 {
+	return input.Color;
 }

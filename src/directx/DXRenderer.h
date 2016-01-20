@@ -7,6 +7,7 @@
 #include "Windows.h"
 #include "../main/engine/Engine.h"
 #include "../main/engine/Renderer.h"
+#include "Shader/ColorShader.h"
 
 class DXRenderer : public IRenderer
 {
@@ -47,6 +48,7 @@ private:
 	ComPtr<IDXGISwapChain> swapChain;
 	D3D_FEATURE_LEVEL featureLevel;
 	ComPtr<ID3D11DeviceContext> deviceContext;
+	std::unique_ptr<ColorShader::ColorShader> colorShader;
 
 	bool registerWindowClass();
 	HRESULT createDXGIDeviceAndAdapter();

@@ -52,7 +52,7 @@ class ShaderLoader
 
 public:
 
-	HRESULT LoadVertex(
+	static HRESULT LoadVertex(
 		ID3D11Device* device,
 		const wchar_t* path,
 		const D3D11_INPUT_ELEMENT_DESC* inputDesc,
@@ -60,27 +60,27 @@ public:
 		ID3D11VertexShader** shader,
 		ID3D11InputLayout** layout);
 
-	HRESULT LoadHull(
+	static HRESULT LoadHull(
 		ID3D11Device* device,
 		const wchar_t* path, 
 		ID3D11HullShader** shader);
 
-	HRESULT LoadDomain(
+	static HRESULT LoadDomain(
 		ID3D11Device* device,
 		const wchar_t* path, 
 		ID3D11DomainShader** shader);
 
-	HRESULT LoadGeometry(
+	static HRESULT LoadGeometry(
 		ID3D11Device* device,
 		const wchar_t* path,
 		ID3D11GeometryShader** shader);
 
-	HRESULT LoadPixel(
+	static HRESULT LoadPixel(
 		ID3D11Device* device,
 		const wchar_t* path,
 		ID3D11PixelShader** shader);
 
-	HRESULT LoadCompute(
+	static HRESULT LoadCompute(
 		ID3D11Device* device,
 		const wchar_t* path,
 		ID3D11ComputeShader** shader);

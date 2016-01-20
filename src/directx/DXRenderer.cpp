@@ -13,6 +13,7 @@ DXRenderer::DXRenderer(std::shared_ptr<Engine> engine) : IRenderer(engine)
 	{
 		instance = this;
 	}
+	colorShader = std::make_unique<ColorShader::ColorShader>();
 }
 
 #pragma region Public Members
@@ -75,12 +76,18 @@ bool DXRenderer::Init(uint32_t width, uint32_t height)
 	}
 
 	swapChain->Present(0, 0);
+
+	auto result = colorShader->Init(device, windowHandle);
+	if (!result) { return false; }
+
 	return true;
 }
 
 void DXRenderer::Draw()
 {
 	using namespace std::literals;
+	using VertexInput = ColorShader::Data::VertexInput;
+
 	MSG msg;
 	while (PeekMessage(&msg, windowHandle, 0, 0, PM_REMOVE))
 	{
