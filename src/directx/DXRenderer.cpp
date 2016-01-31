@@ -230,10 +230,15 @@ HRESULT DXRenderer::createDXGIDeviceAndAdapter()
 				this->adapter = adapter;
 				this->output = output;
 
+				uint32_t flags = 0;
+#ifdef DEBUG
+				flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
 				hr = D3D11CreateDevice(
 					adapter,
 					D3D_DRIVER_TYPE_UNKNOWN, NULL,
-					NULL,
+					flags,
 					NULL, NULL,
 					D3D11_SDK_VERSION,
 					&device, &featureLevel, &deviceContext);

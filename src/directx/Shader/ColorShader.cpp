@@ -7,10 +7,11 @@ bool ColorShader::ColorShader::Init(ID3D11Device* device, HWND hwnd)
 	uint32_t numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 
+	auto inputDesc = Data::GetInputDesc();
 	hr = ShaderLoader::LoadVertex(
 		device, 
-		L"assets\\shaders\\Color.vs.cso", 
-		Data::GetInputDesc()->data(), 2,
+		L"assets\\shaders\\Color.vs.cso",
+		&inputDesc->front(), 2,
 		&vertex, &layout);
 
 	if (FAILED(hr)) { return false; }

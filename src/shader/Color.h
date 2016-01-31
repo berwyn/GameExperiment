@@ -28,27 +28,30 @@ namespace ColorShader
 #endif
 
 #ifdef __cplusplus
-		static std::shared_ptr<std::vector<D3D11_INPUT_ELEMENT_DESC>> GetInputDesc()
+		static inline std::shared_ptr<std::vector<D3D11_INPUT_ELEMENT_DESC>> GetInputDesc()
 		{
 			auto desc = std::vector<D3D11_INPUT_ELEMENT_DESC>();
 			
-			desc[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-			desc[1] = { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+			D3D11_INPUT_ELEMENT_DESC pos = { "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+			D3D11_INPUT_ELEMENT_DESC col = { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+
+			desc.push_back(pos);
+			desc.push_back(col);
 			desc.shrink_to_fit();
 
-			return std::make_shared<std::vector<D3D11_INPUT_ELEMENT_DESC>>();
+			return std::make_shared<std::vector<D3D11_INPUT_ELEMENT_DESC>>(desc);
 		}
 #endif // __cplusplus
 
 		struct VertexInput
 		{
-			float4 Position SEMANTICS(POSTITION);
+			float4 Position SEMANTICS(POSITION);
 			float4 Color SEMANTICS(COLOR);
 		};
 
 		struct PixelInput
 		{
-			float4 Position SEMANTICS(SV_POSITION);
+			float4 Position SEMANTICS(POSITION);
 			float4 Color SEMANTICS(COLOR);
 		};
 
