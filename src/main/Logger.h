@@ -1,12 +1,13 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 class Logger
 {
 
 public:
-	inline static Logger* GetInstance() { return instance; }
+	inline static Logger* GetInstance() { return instance.get(); }
 	void Log(std::string*);
 	void Debug(std::string*);
 	void Warn(std::string*);
@@ -14,6 +15,6 @@ public:
 	void Fatal(std::string*);
 
 private:
-	static Logger* instance;
+    static std::unique_ptr<Logger> instance;
 
 };

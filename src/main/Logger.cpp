@@ -4,10 +4,9 @@
 #include <ctime>
 #include <chrono>
 
-
 #include "Logger.h"
 
-Logger* Logger::instance = &Logger();
+std::unique_ptr<Logger> Logger::instance = std::make_unique<Logger>();
 
 void Logger::Log(std::string* msg)
 {

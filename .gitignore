@@ -7,3 +7,5 @@ obj/
 *.opensdf
 *.sln
 *.VC.opendb
+Makefile
+*.make

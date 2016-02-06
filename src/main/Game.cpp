@@ -21,7 +21,7 @@
 
 #endif
 
-int main(int argc, int* argv[])
+int main(int argc, char* argv[])
 {
 	auto game = Game();
 	if(game.Init())
@@ -42,7 +42,8 @@ bool Game::Init()
 {
 	if (!engine->Init(renderer))
 	{
-		Logger::GetInstance()->Fatal(&std::string("Failed to initialize engine"));
+        auto message = std::make_unique<std::string>("Failed to initialize engine");
+		Logger::GetInstance()->Fatal(message.get());
 		return false;
 	}
 	return true;
