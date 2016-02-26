@@ -1,22 +1,20 @@
-#include "Color.h"
-
-cbuffer MatrixBuffer
+struct VertexInput
 {
-	matrix worldMatrix;
-	matrix viewMatrix;
-	matrix projectionMatrix;
+	float4 Position : POSITION;
+	float4 Color : COLOR;
+};
+
+struct PixelInput
+{
+	float4 Position : SV_POSITION;
+	float4 Color : COLOR;
 };
 
 PixelInput main(VertexInput input)
 {
 	PixelInput output;
-
-	input.Position.w = 1.0f;
 	
-	output.Position = mul(input.Position, worldMatrix);
-	output.Position = mul(output.Position, viewMatrix);
-	output.Position = mul(output.Position, projectionMatrix);
-
+	output.Position = input.Position;
 	output.Color = input.Color;
 	
 	return output;

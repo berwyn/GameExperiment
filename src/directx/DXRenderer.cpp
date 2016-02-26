@@ -86,7 +86,8 @@ bool DXRenderer::Init(uint32_t width, uint32_t height)
 void DXRenderer::Draw()
 {
 	using namespace std::literals;
-	using VertexInput = ColorShader::Data::VertexInput;
+	using namespace DirectX::PackedVector;
+	using ColorShader::Data::VertexInput;
 
 	MSG msg;
 	while (PeekMessage(&msg, windowHandle, 0, 0, PM_REMOVE))
@@ -112,7 +113,39 @@ void DXRenderer::Draw()
 		occluded = false;
 	}
 
-	// TODO: Draw into backbuffer, then present it
+	D3D11_TEXTURE2D_DESC desc = { 0 };
+	backBuffer->GetDesc(&desc);
+
+	D3D11_VIEWPORT viewport = { 0 };
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.Width = desc.Width;
+	viewport.Height = desc.Height;
+	viewport.MinDepth = 0;
+	viewport.MaxDepth = 1;
+
+	D3D11_RASTERIZER_DESC rasterDesc;
+	ZeroMemory(&rasterDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.FrontCounterClockwise = true;
+
+	ComPtr<ID3D11RasterizerState> rasterState;
+	device->CreateRasterizerState(&rasterDesc, &rasterState);
+
+	deviceContext->OMSetRenderTargets(1, &renderTarget.p, nullptr);
+	deviceContext->RSSetState(rasterState.p);
+	deviceContext->RSSetViewports(1, &viewport);
+
+	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	deviceContext->ClearRenderTargetView(renderTarget.p, clearColor);
+
+	auto vertices = std::make_shared<std::vector<VertexInput>>();
+	vertices->push_back({ XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) });
+	vertices->push_back({ XMFLOAT4(0.45f, -0.5f, 0.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) });
+	vertices->push_back({ XMFLOAT4(-0.45f, -0.5f, 0.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
+	colorShader->Render(deviceContext, device, vertices.get());
+
 	hr = swapChain->Present(0, 0);
 
 	switch (hr)
@@ -293,7 +326,17 @@ HRESULT DXRenderer::createDXGISwapChain()
 	case S_FALSE:
 		Logger::GetInstance()->Warn(&std::string("DXGI succeeded in a nonstandard way. HERE THERE BE DRAGONS!"));
 	case S_OK:
+		createRenderTarget();
 		return S_OK;
+	}
+}
+
+void DXRenderer::createRenderTarget()
+{
+	swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
+	auto hr = device->CreateRenderTargetView(backBuffer, nullptr, &renderTarget);
+	if (FAILED(hr)) {
+		Logger::GetInstance()->Fatal(&std::string("Failed to create render target view"));
 	}
 }
 
@@ -306,6 +349,7 @@ void DXRenderer::fixBuffers()
 	if (swapChain != nullptr)
 	{
 		swapChain->ResizeBuffers(numBuffers, this->width, this->height, dxgiFormat, 0);
+		createRenderTarget();
 	}
 }
 

@@ -1,5 +1,6 @@
 #include "ColorShader.h"
 #include "../ShaderLoader.h"
+#include "../../main/Logger.h"
 
 bool ColorShader::ColorShader::Init(ID3D11Device* device, HWND hwnd)
 {
@@ -9,7 +10,7 @@ bool ColorShader::ColorShader::Init(ID3D11Device* device, HWND hwnd)
 
 	auto inputDesc = Data::GetInputDesc();
 	hr = ShaderLoader::LoadVertex(
-		device, 
+		device,
 		L"assets\\shaders\\Color.vs.cso",
 		&inputDesc->front(), 2,
 		&vertex, &layout);
@@ -26,17 +27,39 @@ bool ColorShader::ColorShader::Init(ID3D11Device* device, HWND hwnd)
 
 bool ColorShader::ColorShader::Render(
 	ID3D11DeviceContext* deviceContext,
-	CXMMATRIX worldMatrix,
-	CXMMATRIX viewMatrix,
-	CXMMATRIX projectionMatrix,
-	Data::VertexInput input)
+	ID3D11Device* device,
+	std::vector<Data::VertexInput>* input)
 {
-	bool result = setShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
-	if (!result) { return false; }
+	using Data::VertexInput;
+
+	/*bool result = setShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
+	if (!result) { return false; }*/
 
 	deviceContext->IASetInputLayout(layout);
-	deviceContext->VSSetShader(vertex, NULL, NULL);
-	deviceContext->PSSetShader(pixel, NULL, NULL);
+	deviceContext->VSSetShader(vertex, nullptr, NULL);
+	deviceContext->PSSetShader(pixel, nullptr, NULL);
+
+	uint32_t inputSize = sizeof(VertexInput);
+	size_t numInputs = input->size();
+
+	D3D11_BUFFER_DESC bd = { 0 };
+	bd.Usage = D3D11_USAGE_IMMUTABLE;
+	bd.ByteWidth = inputSize * numInputs;
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA sData = { 0 };
+	sData.pSysMem = input->data();
+
+	ID3D11Buffer* buffer;
+	device->CreateBuffer(&bd, &sData, &buffer);
+
+	uint32_t offset = 0;
+	deviceContext->IASetVertexBuffers(0, 1, &buffer, &inputSize, &offset);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->Draw(0, numInputs);
+
+	buffer->Release();
+	return true;
 }
 
 bool ColorShader::ColorShader::setShaderParameters(

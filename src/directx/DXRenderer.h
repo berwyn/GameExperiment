@@ -46,6 +46,8 @@ private:
 	ComPtr<IDXGIOutput> output;
 	ComPtr<ID3D11Device> device;
 	ComPtr<IDXGISwapChain> swapChain;
+	ComPtr<ID3D11Texture2D> backBuffer;
+	ComPtr<ID3D11RenderTargetView> renderTarget;
 	D3D_FEATURE_LEVEL featureLevel;
 	ComPtr<ID3D11DeviceContext> deviceContext;
 	std::unique_ptr<ColorShader::ColorShader> colorShader;
@@ -53,6 +55,7 @@ private:
 	bool registerWindowClass();
 	HRESULT createDXGIDeviceAndAdapter();
 	HRESULT createDXGISwapChain();
+	void createRenderTarget();
 	void fixBuffers();
 
 };

@@ -16,6 +16,7 @@
 #include <d3d11.h>
 #include <dxgi1_2.h>
 #include <DirectXMath.h>
+#include <DirectXPackedVector.h>
 
 // Libs
 #pragma comment (lib, "user32.lib")

@@ -1,6 +1,10 @@
-#include "Color.h"
+struct PixelInput
+{
+	float4 Position : SV_POSITION;
+	float4 Color : COLOR;
+};
 
 float4 main(PixelInput input) : SV_TARGET
 {
-	return input.Color;
+	return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
