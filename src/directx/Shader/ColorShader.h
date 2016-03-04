@@ -18,7 +18,7 @@ namespace ColorShader
 			auto desc = std::vector<D3D11_INPUT_ELEMENT_DESC>();
 
 			D3D11_INPUT_ELEMENT_DESC pos = { "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-			D3D11_INPUT_ELEMENT_DESC col = { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+			D3D11_INPUT_ELEMENT_DESC col = { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 
 			desc.push_back(pos);
 			desc.push_back(col);
@@ -29,8 +29,8 @@ namespace ColorShader
 
 		struct VertexInput
 		{
-			DirectX::XMFLOAT4 Position;
-			DirectX::XMFLOAT4 Color;
+			XMFLOAT4 Position;
+			XMFLOAT4 Color;
 		};
 	}
 

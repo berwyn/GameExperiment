@@ -7,12 +7,14 @@ project "Game"
     targetdir "bin/"
     dependson { "Shaders" }
 
-    files { "src/**.h", "src/**.cpp" }
+    files { "src/**.h", "src/**.cpp", "src/shader/**" }
 
     filter "configurations:Debug"
+        optimize "Debug"
         defines { "DEBUG" }
         flags { "Symbols" }
-        debugdir "bin/"
+        -- Full path so NSight can function
+        debugdir "%{cfg.targetdir}"
 
     filter "system:windows"
         defines { "WIN32", "WINDOWS", "_WINDOWS", "_UNICODE", "UNICODE" }
@@ -52,14 +54,14 @@ project "Shaders"
 
     filter "files:**.vs.hlsl"
         buildcommands {
-            'fxc /Fo "%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso" /E "main" /T vs_5_0 /nologo %{file.relpath}'
+            'fxc /Zi /Fo "%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso" /E "main" /T vs_5_0 /nologo %{file.relpath}'
         }
 
         buildoutputs { '%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso' }
 
     filter "files:**.ps.hlsl"
         buildcommands {
-           'fxc /Fo "%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso" /E "main" /T ps_5_0 /nologo %{file.relpath}'
+           'fxc /Zi /Fo "%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso" /E "main" /T ps_5_0 /nologo %{file.relpath}'
         }
 
         buildoutputs { '%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso' }

@@ -12,7 +12,7 @@ bool ColorShader::ColorShader::Init(ID3D11Device* device, HWND hwnd)
 	hr = ShaderLoader::LoadVertex(
 		device,
 		L"assets\\shaders\\Color.vs.cso",
-		&inputDesc->front(), 2,
+		inputDesc->data(), 2,
 		&vertex, &layout);
 
 	if (FAILED(hr)) { return false; }
@@ -32,9 +32,6 @@ bool ColorShader::ColorShader::Render(
 {
 	using Data::VertexInput;
 
-	/*bool result = setShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
-	if (!result) { return false; }*/
-
 	deviceContext->IASetInputLayout(layout);
 	deviceContext->VSSetShader(vertex, nullptr, NULL);
 	deviceContext->PSSetShader(pixel, nullptr, NULL);
@@ -48,7 +45,7 @@ bool ColorShader::ColorShader::Render(
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA sData = { 0 };
-	sData.pSysMem = input->data();
+	sData.pSysMem = &input[0];
 
 	ID3D11Buffer* buffer;
 	device->CreateBuffer(&bd, &sData, &buffer);

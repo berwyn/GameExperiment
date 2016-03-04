@@ -268,11 +268,16 @@ HRESULT DXRenderer::createDXGIDeviceAndAdapter()
 				flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
+				D3D_FEATURE_LEVEL levels[2] = {
+					D3D_FEATURE_LEVEL_11_1,
+					D3D_FEATURE_LEVEL_11_0
+				};
+
 				hr = D3D11CreateDevice(
 					adapter,
 					D3D_DRIVER_TYPE_UNKNOWN, NULL,
 					flags,
-					NULL, NULL,
+					levels, 2,
 					D3D11_SDK_VERSION,
 					&device, &featureLevel, &deviceContext);
 
