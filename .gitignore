@@ -9,3 +9,7 @@ obj/
 *.VC.opendb
 Makefile
 *.make
+*.xcworkspace
+*.xcodeproj
+
+browse.VC.db

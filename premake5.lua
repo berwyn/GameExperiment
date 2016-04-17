@@ -48,6 +48,7 @@ project "Shaders"
             'mkdir -p %{cfg.targetdir}/assets/shaders'
         }
         buildcommands {
+            'mkdir -p %{cfg.targetdir}/assets/shaders',
             'cp %{file.relpath} %{cfg.targetdir}/assets/shaders/'
         }
         buildoutputs { '%{cfg.targetdir}/assets/shaders/%{file.basename}.glsl' }
