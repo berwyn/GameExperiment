@@ -1,5 +1,7 @@
 #pragma once
 
+
+#include <math.h>
 #include <stdint.h>
 #include <vector>
 
@@ -11,8 +13,11 @@ public:
     uint32_t fragment;
     uint32_t program;
     
-    TriangleShader(std::vector<float>* vertices);
+    inline TriangleShader(){};
     ~TriangleShader();
+    
+    void Init();
+    void Draw();
     
 private:
     

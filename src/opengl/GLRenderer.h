@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <math.h>
 
 #include "Platform.h"
 
@@ -12,7 +13,7 @@ class GLRenderer : public IRenderer
 
 public:
 
-    inline GLRenderer(std::shared_ptr<Engine> engine): IRenderer(engine), shader(nullptr){};
+    inline GLRenderer(std::shared_ptr<Engine> engine): IRenderer(engine){};
     bool Init(uint32_t width, uint32_t height) override;
     void Draw() override;
     
@@ -20,5 +21,9 @@ private:
     
     GLFWwindow* window;
     TriangleShader shader;
+    
+    // FIXME: Stop rendering a dumb triangle :)
+    uint32_t vao;
+    uint32_t vertexBuffer;
 
 };

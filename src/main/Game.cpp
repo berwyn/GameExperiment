@@ -2,20 +2,19 @@
 #include <iostream>
 #include <thread>
 
-#include "cmdline.h"
 #include "Game.h"
 #include "Logger.h"
-
-#if defined(WINDOWS) && !defined(DEBUG)
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
-#endif
 
 #ifdef WINDOWS
 #include "../directx/DXRenderer.h"
 #endif
 
 #ifdef APPLE
-#include "../metal/MetalRenderer.hh"
+#include "../metal/MTRenderer.hh"
+#endif
+
+#ifndef APPLE
+#include "../vulkan/VKRenderer.h"
 #endif
 
 #include "../opengl/GLRenderer.h"
@@ -108,13 +107,13 @@ void Game::SetupRenderer(const char* rendererFlag)
 	else if(strcmp(rendererFlag, "metal"))
 	{
 #ifdef APPLE
-		renderer = std::make_shared<MetalRenderer>(this->engine);
+		renderer = std::make_shared<MTRenderer>(this->engine);
 #endif
 	}
 	else if(strcmp(rendererFlag, "vulkan"))
 	{
 #ifndef APPLE
-		renderer = std::make_shared<VulkanRenderer>(this->engine);
+		renderer = std::make_shared<VKRenderer>(this->engine);
 #endif
 	}
 	else

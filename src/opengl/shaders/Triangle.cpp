@@ -1,18 +1,27 @@
+#ifndef APPLE
+#include <gl/glew.h>
+#endif
+
 #include "Platform.h"
 #include "Triangle.h"
 #include "../ShaderLoader.h"
 
-TriangleShader::TriangleShader(std::vector<float>* vertices)
+TriangleShader::~TriangleShader(){}
+
+void TriangleShader::Init()
 {
-    if(vertices == nullptr) return;
-    
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     
-    auto data = vertices->data();
+    float_t vertexData[] = {
+        -1.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        0.0f,  1.0f, 0.0f,
+    };
+    
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
     
     auto loader = ShaderLoader::GetInstance();
     
@@ -30,10 +39,15 @@ TriangleShader::TriangleShader(std::vector<float>* vertices)
     
     uint32_t posAttrib = glGetAttribLocation(program, "position");
     glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 }
 
-TriangleShader::~TriangleShader()
+void TriangleShader::Draw()
 {
-    
+    glUseProgram(program);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDisableVertexAttribArray(0);
 }

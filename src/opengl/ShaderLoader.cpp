@@ -25,8 +25,10 @@ uint32_t ShaderLoader::LoadShaderFromSource(uint32_t type, std::string* name)
     glShaderSource(shader, 1, &src, NULL);
     glCompileShader(shader);
     
-    GLint status;
+    int32_t status;
+    int32_t infoLogStatus;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogStatus);
     
     if(status == GL_TRUE)
     {

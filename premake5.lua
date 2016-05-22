@@ -37,6 +37,10 @@ project "Game"
 
     filter "system:windows"
         links { "DirectX", "OpenGL", "Vulkan" }
+        linkoptions {
+            '/SUBSYSTEM:windows',
+            '/ENTRY:mainCRTStartup' }
+
     filter "system:macosx"
         links { "OpenGL", "Metal" }
         links {

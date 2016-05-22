@@ -11,12 +11,13 @@
 
 #include "../main/engine/Renderer.h"
 
-class MetalRenderer : public IRenderer
+class MTRenderer : public IRenderer
 {
 
 public:
-    MetalRenderer(std::shared_ptr<Engine> engine);
-    ~MetalRenderer();
+
+    MTRenderer(std::shared_ptr<Engine> engine);
+    ~MTRenderer();
     
     bool Init(uint32_t width, uint32_t height) override;
     void Draw() override;
