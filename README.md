@@ -25,23 +25,23 @@ on my calculus and linear algebra.
 (Assuming you've used vcvars_all to place Visual Studio/MSBuild on your `PATH`)
 ```posh
 PS> premake5 vs2015
-PS> msbuild GameExperiment.sln
+PS> msbuild build/GameExperiment.sln
 ```
 alternatively, to open in VS2015
 ```posh
 PS> premake5 vs2015
-PS> devenv GameExperiment.sln
+PS> devenv build/GameExperiment.sln
 ```
 
 #### OSX
 ```bash
 $ premake5 xcode4
-$ xcbuild GameExperiment.xcworkspace
+$ xcbuild build/GameExperiment.xcworkspace
 ```
 alternatively, to open in XCode
 ```bash
 $ premake5 xcode4
-$ open GameExperiment.xcworkspace
+$ open build/GameExperiment.xcworkspace
 ```
 
 ---
@@ -55,10 +55,12 @@ $ open GameExperiment.xcworkspace
  | |- main          // Platform agnostic and game logic code
  | |- directx       // DirectX 11 Renderer
  | |- opengl        // OpenGL 3.2 Renderer
- | `- shader        // HLSL/GLSL shaders
- |
- |- bin             // Compiled binaries
- |- obj             // Intermediary files
+ | |- metal         // Metal Renderer
+ | `- vulkan        // Vulkan Renderer
+ |-bin              // Compiled binaries
+ | |- release       // Release-optimised binaries
+ | `- debug         // Debug-optimised binaries
+ |-build            // Project files
  `- premake5.lua    // Premake configuration file, generates projects
 ```
 

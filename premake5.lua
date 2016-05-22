@@ -29,6 +29,8 @@ project "Game"
     dependson { "DirectX", "OpenGL", "Metal", "Vulkan" }
     files { "src/main/**.h", "src/main/**.cpp" }
 
+    includedirs { "vendor/cmdline" }
+
     -- Full path so NSight can function
     filter "configurations:Debug"
         debugdir "%{cfg.targetdir}"
@@ -41,10 +43,10 @@ project "Game"
             "CoreFoundation.framework",
             "Cocoa.framework",
             "OpenGL.framework",
+            "Metal.framework",
             "MetalKit.framework",
             "IOKit.framework",
-            "CoreVideo.framework"
-        }
+            "CoreVideo.framework" }
 
 project "DirectX"
     kind "StaticLib"
@@ -74,25 +76,25 @@ project "DirectX"
 
         buildoutputs { '%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso' }
 
-project "OpenGL"
-    kind "StaticLib"
-    language "C++"
+project 'OpenGL'
+    kind 'StaticLib'
+    language 'C++'
 
     files {
-        "src/opengl/**.h",
-        "src/opengl/**.cpp",
-        "src/opengl/**.glsl"
+        'src/opengl/**.h',
+        'src/opengl/**.cpp',
+        'src/opengl/**.glsl'
     }
 
-    filter "system:macosx"
+    filter 'system:macosx'
         links {
-            "Cocoa.framework",
-            "OpenGL.framework",
-            "IOKit.framework",
-            "CoreVideo.framework"
+            'Cocoa.framework',
+            'OpenGL.framework',
+            'IOKit.framework',
+            'CoreVideo.framework'
         }
 
-    filter "files:**.glsl"
+    filter 'files:**.glsl'
         buildmessage 'Compiling %{file.relpath}'
         prebuildcommands {
             'mkdir -p %{cfg.targetdir}/assets/shaders'
@@ -110,14 +112,18 @@ project "Metal"
     language "C++"
 
     filter "system:macosx"
-        files { "src/metal/**.h", "src/metal/**.mm" }
+        files {
+            "src/metal/**.h",
+            "src/metal/**.hh",
+            "src/metal/**.mm",
+            "src/metal/**.metal" }
         links {
             "CoreFoundation.framework",
             "Cocoa.framework",
+            "Metal.framework",
             "MetalKit.framework",
             "IOKit.framework",
-            "CoreVideo.framework"
-        }
+            "CoreVideo.framework" }
 
 project "Vulkan"
     kind "StaticLib"

@@ -9,9 +9,9 @@ class Game
 
 public:
 
-	Game();
+    Game();
 
-	bool Init();
+	bool Init(const char* rendererFlag);
 	void Loop();
 	void Terminate();
 
@@ -19,5 +19,7 @@ private:
 
 	std::shared_ptr<Engine> engine;
 	std::shared_ptr<IRenderer> renderer;
+    
+    void SetupRenderer(const char* rendererFlag);
 
 };

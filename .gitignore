@@ -1,14 +1,18 @@
 build/
 bin/
 obj/
+
 .vs/
+.vscode/
 *.vcxproj*
 *.sdf
 *.opensdf
 *.sln
 *.VC.opendb
+
 Makefile
 *.make
+
 *.xcworkspace
 *.xcodeproj
 
