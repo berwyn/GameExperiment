@@ -1,57 +1,64 @@
 workspace "GameExperiment"
     configurations { "Debug", "Release" }
+    location "build/"
+
+    configuration "Debug"
+        optimize "Debug"
+        defines { "DEBUG" }
+        flags "Symbols"
+        targetdir "bin/debug"
+
+    configuration "Release"
+        targetdir "bin/release"
+
+    filter "system:windows"
+        defines { "WIN32", "WINDOWS", "_WINDOWS", "_UNICODE", "UNICODE" }
+
+    filter "system:macosx"
+        architecture "x86_64"
+        defines { "APPLE" }
+        buildoptions { "-std=c++14" }
+        includedirs { "/usr/local/Cellar/glfw3/3.1.2/include" }
+        libdirs { "/usr/local/Cellar/glfw3/3.1.2/lib" }
 
 project "Game"
     kind "ConsoleApp"
     language "C++"
-    targetdir "bin/"
-    dependson { "Shaders" }
 
-    files { "src/**.h", "src/**.cpp", "src/shader/**" }
+    links { "glfw3" }
+    dependson { "DirectX", "OpenGL", "Metal", "Vulkan" }
+    files { "src/main/**.h", "src/main/**.cpp" }
 
+    -- Full path so NSight can function
     filter "configurations:Debug"
-        optimize "Debug"
-        defines { "DEBUG" }
-        flags { "Symbols" }
-        -- Full path so NSight can function
         debugdir "%{cfg.targetdir}"
 
     filter "system:windows"
-        defines { "WIN32", "WINDOWS", "_WINDOWS", "_UNICODE", "UNICODE" }
-        removefiles { "src/opengl/**", "src/shader/glsl/**" }
-
+        links { "DirectX", "OpenGL", "Vulkan" }
     filter "system:macosx"
-        architecture "x86_64"
-        removefiles { "src/directx/**", "src/shader/hlsl/**" }
-        defines { "APPLE" }
-        links { "glfw3", "Cocoa.framework", "OpenGL.framework", 
-                "IOKit.framework", "IOKit.framework", "CoreVideo.framework" }
-        buildoptions { "--std=c++14", "-I/usr/local/Cellar/glfw3/3.1.2/include/" }
-        linkoptions { "-L/usr/local/Cellar/glfw3/3.1.2/lib" }
+        links { "OpenGL", "Metal" }
+        links {
+            "CoreFoundation.framework",
+            "Cocoa.framework",
+            "OpenGL.framework",
+            "MetalKit.framework",
+            "IOKit.framework",
+            "CoreVideo.framework"
+        }
 
-project "Shaders"
+project "DirectX"
     kind "StaticLib"
     language "C++"
-    targetdir "bin/"
 
-    files { "src/shader/**" }
+    filter "system:not windows"
+        files { "src/dummy.cpp" }
 
     filter "system:windows"
-        removefiles { "src/shader/glsl/**" }
-
-    filter "system:macosx"
-        removefiles { "src/shader/hlsl/**" }
-        
-    filter "files:**.glsl"
-        buildmessage 'Compiling %{file.relpath}'
-        prebuildcommands {
-            'mkdir -p %{cfg.targetdir}/assets/shaders'
+        files { 
+            "src/directx/**.h",
+            "src/directx/**.cpp",
+            "src/directx/**.hlsl"
         }
-        buildcommands {
-            'mkdir -p %{cfg.targetdir}/assets/shaders',
-            'cp %{file.relpath} %{cfg.targetdir}/assets/shaders/'
-        }
-        buildoutputs { '%{cfg.targetdir}/assets/shaders/%{file.basename}.glsl' }
 
     filter "files:**.vs.hlsl"
         buildcommands {
@@ -67,3 +74,57 @@ project "Shaders"
 
         buildoutputs { '%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso' }
 
+project "OpenGL"
+    kind "StaticLib"
+    language "C++"
+
+    files {
+        "src/opengl/**.h",
+        "src/opengl/**.cpp",
+        "src/opengl/**.glsl"
+    }
+
+    filter "system:macosx"
+        links {
+            "Cocoa.framework",
+            "OpenGL.framework",
+            "IOKit.framework",
+            "CoreVideo.framework"
+        }
+
+    filter "files:**.glsl"
+        buildmessage 'Compiling %{file.relpath}'
+        prebuildcommands {
+            'mkdir -p %{cfg.targetdir}/assets/shaders'
+        }
+
+        buildcommands {
+            'mkdir -p %{cfg.targetdir}/assets/shaders',
+            'cp %{file.relpath} %{cfg.targetdir}/assets/shaders/'
+        }
+
+        buildoutputs { '%{cfg.targetdir}/assets/shaders/%{file.basename}.glsl' }
+
+project "Metal"
+    kind "StaticLib"
+    language "C++"
+
+    filter "system:macosx"
+        files { "src/metal/**.h", "src/metal/**.mm" }
+        links {
+            "CoreFoundation.framework",
+            "Cocoa.framework",
+            "MetalKit.framework",
+            "IOKit.framework",
+            "CoreVideo.framework"
+        }
+
+project "Vulkan"
+    kind "StaticLib"
+    language "C++"
+
+    filter "system:macosx"
+        files { "src/dummy.cpp" }
+
+    filter "system:not macosx"
+        files { "src/vulkan/**.h", "src/vulkan/**.cpp" }

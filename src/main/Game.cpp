@@ -10,16 +10,14 @@
 #endif
 
 #ifdef WINDOWS
-
 #include "../directx/DXRenderer.h"
-#define Renderer DXRenderer
+#endif
 
-#else
+#ifdef APPLE
+#include "../metal/MetalRenderer.hh"
+#endif
 
 #include "../opengl/GLRenderer.h"
-#define Renderer GLRenderer
-
-#endif
 
 int main(int argc, char* argv[])
 {
@@ -34,8 +32,8 @@ int main(int argc, char* argv[])
 
 Game::Game()
 {
-	engine = std::make_shared<Engine>();
-	renderer = std::make_shared<Renderer>(engine);
+	this->engine = std::make_shared<Engine>();
+	this->renderer = std::make_shared<GLRenderer>(engine);
 }
 
 bool Game::Init()
