@@ -90,6 +90,9 @@ project 'OpenGL'
         'src/opengl/**.glsl'
     }
 
+    includedirs {
+        'vendor/glm' }
+
     filter 'system:macosx'
         links {
             'Cocoa.framework',

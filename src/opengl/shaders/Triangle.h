@@ -17,11 +17,13 @@ public:
     ~TriangleShader();
     
     void Init();
-    void Draw();
+    void Draw(int32_t renderWidth, int32_t renderHeight);
     
 private:
     
     uint32_t vao;
     uint32_t vbo;
+    uint32_t cbo;
+    uint32_t matrix;
     
 };

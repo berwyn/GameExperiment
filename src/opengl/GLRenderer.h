@@ -14,6 +14,8 @@ class GLRenderer : public IRenderer
 public:
 
     inline GLRenderer(std::shared_ptr<Engine> engine): IRenderer(engine){};
+    ~GLRenderer();
+
     bool Init(uint32_t width, uint32_t height) override;
     void Draw() override;
     
