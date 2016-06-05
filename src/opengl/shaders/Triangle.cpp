@@ -6,7 +6,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "Platform.h"
+#include "../Platform.h"
 #include "Triangle.h"
 #include "../ShaderLoader.h"
 

@@ -59,7 +59,9 @@ std::string ShaderLoader::loadSource(std::string* name)
         return "";
     }
     basePath = dirname(nsBasePath);
-    
+
+#elif defined(WINDOWS)
+    // TODO: Implement Windows version :(
 #else
     // TODO: Implement Linux version :(
 #endif

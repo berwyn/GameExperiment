@@ -21,12 +21,15 @@ workspace "GameExperiment"
         includedirs { "/usr/local/Cellar/glfw3/3.1.2/include" }
         libdirs { "/usr/local/Cellar/glfw3/3.1.2/lib" }
 
+    filter "action:gmake"
+        toolset "clang"
+
 project "Game"
     kind "ConsoleApp"
     language "C++"
 
     links { "glfw3" }
-    dependson { "DirectX", "OpenGL", "Metal", "Vulkan" }
+    -- dependson { "DirectX", "OpenGL", "Metal", "Vulkan" }
     files { "src/main/**.h", "src/main/**.cpp" }
 
     includedirs { "vendor/cmdline" }
@@ -36,12 +39,14 @@ project "Game"
         debugdir "%{cfg.targetdir}"
 
     filter "system:windows"
+        dependson { "DirectX", "OpenGL", "Vulkan" }
         links { "DirectX", "OpenGL", "Vulkan" }
         linkoptions {
             '/SUBSYSTEM:windows',
             '/ENTRY:mainCRTStartup' }
 
     filter "system:macosx"
+        dependson { "OpenGL", "Metal" }
         links { "OpenGL", "Metal" }
         links {
             "CoreFoundation.framework",
