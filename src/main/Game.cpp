@@ -31,60 +31,60 @@ const char* getCmdOption(char** begin, char** end, const std::string& option)
 
 int main(int argc, char* argv[])
 {
-	const char* rendererFlag = getCmdOption(argv, argv + argc, "--renderer");
-	
-	auto game = Game();
-	if(game.Init(rendererFlag))
-	{
-		game.Loop();
-	}
-	game.Terminate();
-	return 0;
+    const char* rendererFlag = getCmdOption(argv, argv + argc, "--renderer");
+    
+    auto game = Game();
+    if(game.Init(rendererFlag))
+    {
+        game.Loop();
+    }
+    game.Terminate();
+    return 0;
 }
 
 Game::Game()
 {
-	this->engine = std::make_shared<Engine>();
+    this->engine = std::make_shared<Engine>();
 }
 
 bool Game::Init(const char* rendererFlag)
 {
-	this->SetupRenderer(rendererFlag);
-	if (!engine->Init(renderer))
-	{
-		auto message = std::make_unique<std::string>("Failed to initialize engine");
-		Logger::GetInstance()->Fatal(message.get());
-		return false;
-	}
-	return true;
+    this->SetupRenderer(rendererFlag);
+    if (!engine->Init(renderer))
+    {
+        auto message = std::make_unique<std::string>("Failed to initialize engine");
+        Logger::GetInstance()->Fatal(message.get());
+        return false;
+    }
+    return true;
 }
 
 void Game::Loop()
 {
-	while (!engine->ShouldHalt)
-	{
-		using namespace std::literals;
-		// TODO: Do real things here
-		engine->Frame();
-	}
+    while (!engine->ShouldHalt)
+    {
+        using namespace std::literals;
+        // TODO: Do real things here
+        engine->Frame();
+    }
 }
 
 void Game::Terminate()
 {
 
 #ifdef DEBUG
-	if (engine->IsInErrorState)
-	{
-		// TODO: Shutdown GUI but wait for input before closing console
-	}
+    if (engine->IsInErrorState)
+    {
+        // TODO: Shutdown GUI but wait for input before closing console
+    }
 #endif
 
-	engine->Shutdown();
+    engine->Shutdown();
 }
 
 void Game::SetupRenderer(const char* rendererFlag)
 {
-	std::shared_ptr<IRenderer> renderer = nullptr;
+    std::shared_ptr<IRenderer> renderer = nullptr;
     
     if(rendererFlag == nullptr || strcmp("", rendererFlag))
     {
@@ -95,36 +95,36 @@ void Game::SetupRenderer(const char* rendererFlag)
 #endif
     }
     else if(strcmp(rendererFlag, "directx"))
-	{
+    {
 #ifdef WINDOWS
-		renderer = std::make_shared<DXRenderer>(this->engine);
+        renderer = std::make_shared<DXRenderer>(this->engine);
 #endif
-	}
-	else if(strcmp(rendererFlag, "opengl"))
-	{
-		renderer = std::make_shared<GLRenderer>(this->engine);
-	}
-	else if(strcmp(rendererFlag, "metal"))
-	{
+    }
+    else if(strcmp(rendererFlag, "opengl"))
+    {
+        renderer = std::make_shared<GLRenderer>(this->engine);
+    }
+    else if(strcmp(rendererFlag, "metal"))
+    {
 #ifdef APPLE
-		renderer = std::make_shared<MTRenderer>(this->engine);
+        renderer = std::make_shared<MTRenderer>(this->engine);
 #endif
-	}
-	else if(strcmp(rendererFlag, "vulkan"))
-	{
+    }
+    else if(strcmp(rendererFlag, "vulkan"))
+    {
 #ifndef APPLE
-		renderer = std::make_shared<VKRenderer>(this->engine);
+        renderer = std::make_shared<VKRenderer>(this->engine);
 #endif
-	}
-	else
-	{
+    }
+    else
+    {
         exit(2);
-	}
-	
-	if(renderer == nullptr)
-	{
-		exit(1);
-	}
-	
-	this->renderer = renderer;
+    }
+    
+    if(renderer == nullptr)
+    {
+        exit(1);
+    }
+    
+    this->renderer = renderer;
 }

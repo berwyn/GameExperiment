@@ -1,7 +1,3 @@
-#ifndef APPLE
-#include <gl/glew.h>
-#endif
-
 #include <stdbool.h>
 
 #include "../main/engine/Engine.h"

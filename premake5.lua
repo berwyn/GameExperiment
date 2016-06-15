@@ -1,84 +1,96 @@
-workspace "GameExperiment"
-    configurations { "Debug", "Release" }
-    location "build/"
+local chocoPath = os.getenv('ChocolateyPath')
+local appLocal = os.getenv('LOCALAPPDATA')
 
-    configuration "Debug"
-        optimize "Debug"
-        defines { "DEBUG" }
-        flags "Symbols"
-        targetdir "bin/debug"
+workspace 'GameExperiment'
+    configurations { 'Debug', 'Release' }
+    location 'build/'
 
-    configuration "Release"
-        targetdir "bin/release"
+    configuration 'Debug'
+        optimize 'Debug'
+        defines { 'DEBUG' }
+        flags 'Symbols'
+        targetdir 'bin/debug'
 
-    filter "system:windows"
-        defines { "WIN32", "WINDOWS", "_WINDOWS", "_UNICODE", "UNICODE" }
+    configuration 'Release'
+        targetdir 'bin/release'
 
-    filter "system:macosx"
-        architecture "x86_64"
-        defines { "APPLE" }
-        buildoptions { "-std=c++14" }
-        includedirs { "/usr/local/Cellar/glfw3/3.1.2/include" }
-        libdirs { "/usr/local/Cellar/glfw3/3.1.2/lib" }
+    filter 'system:windows'
+        architecture 'x86_64'
+        defines { 'WIN32', 'WINDOWS', '_WINDOWS', '_UNICODE', 'UNICODE' }
 
-    filter "action:gmake"
-        toolset "clang"
+    filter 'system:macosx'
+        architecture 'x86_64'
+        defines { 'APPLE' }
+        buildoptions { '-std=c++14' }
+        includedirs { '/usr/local/Cellar/glfw3/3.1.2/include' }
+        libdirs { '/usr/local/Cellar/glfw3/3.1.2/lib' }
 
-project "Game"
-    kind "ConsoleApp"
-    language "C++"
+    filter 'system:windows'
+        includedirs {
+            'vendor/glfw3/include',
+            appLocal .. '\\scoop\\apps\\glew\\1.13.0\\include' }
+        libdirs {
+            'vendor/glfw3/src/Debug',
+            appLocal .. '\\scoop\\apps\\glew\\1.13.0\\lib\\Release\\x64' }
 
-    links { "glfw3" }
-    -- dependson { "DirectX", "OpenGL", "Metal", "Vulkan" }
-    files { "src/main/**.h", "src/main/**.cpp" }
+    filter 'action:gmake'
+        toolset 'clang'
 
-    includedirs { "vendor/cmdline" }
+project 'Game'
+    kind 'ConsoleApp'
+    language 'C++'
+
+    links { 'glfw3' }
+    files { 'src/main/**.h', 'src/main/**.cpp' }
 
     -- Full path so NSight can function
-    filter "configurations:Debug"
-        debugdir "%{cfg.targetdir}"
+    filter 'configurations:Debug'
+        debugdir '%{cfg.targetdir}'
 
-    filter "system:windows"
-        dependson { "DirectX", "OpenGL", "Vulkan" }
-        links { "DirectX", "OpenGL", "Vulkan" }
+    filter 'system:windows'
+        dependson { 'DirectX', 'OpenGL', 'Vulkan' }
+        links { 'DirectX', 'OpenGL', 'Vulkan' }
+        links {
+            'glew32',
+            'opengl32' }
         linkoptions {
             '/SUBSYSTEM:windows',
             '/ENTRY:mainCRTStartup' }
 
-    filter "system:macosx"
-        dependson { "OpenGL", "Metal" }
-        links { "OpenGL", "Metal" }
+    filter 'system:macosx'
+        dependson { 'OpenGL', 'Metal' }
+        links { 'OpenGL', 'Metal' }
         links {
-            "CoreFoundation.framework",
-            "Cocoa.framework",
-            "OpenGL.framework",
-            "Metal.framework",
-            "MetalKit.framework",
-            "IOKit.framework",
-            "CoreVideo.framework" }
+            'CoreFoundation.framework',
+            'Cocoa.framework',
+            'OpenGL.framework',
+            'Metal.framework',
+            'MetalKit.framework',
+            'IOKit.framework',
+            'CoreVideo.framework' }
 
-project "DirectX"
-    kind "StaticLib"
-    language "C++"
+project 'DirectX'
+    kind 'StaticLib'
+    language 'C++'
 
-    filter "system:not windows"
-        files { "src/dummy.cpp" }
+    filter 'system:not windows'
+        files { 'src/dummy.cpp' }
 
-    filter "system:windows"
+    filter 'system:windows'
         files { 
-            "src/directx/**.h",
-            "src/directx/**.cpp",
-            "src/directx/**.hlsl"
+            'src/directx/**.h',
+            'src/directx/**.cpp',
+            'src/directx/**.hlsl'
         }
 
-    filter "files:**.vs.hlsl"
+    filter 'files:**.vs.hlsl'
         buildcommands {
             'fxc /Zi /Fo "%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso" /E "main" /T vs_5_0 /nologo %{file.relpath}'
         }
 
         buildoutputs { '%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso' }
 
-    filter "files:**.ps.hlsl"
+    filter 'files:**.ps.hlsl'
         buildcommands {
            'fxc /Zi /Fo "%{cfg.targetdir}\\assets\\shaders\\%{file.basename}.cso" /E "main" /T ps_5_0 /nologo %{file.relpath}'
         }
@@ -114,35 +126,35 @@ project 'OpenGL'
 
         buildcommands {
             'mkdir -p %{cfg.targetdir}/assets/shaders',
-            'cp %{file.relpath} %{cfg.targetdir}/assets/shaders/'
+            '{COPY} %{file.relpath} %{cfg.targetdir}/assets/shaders/'
         }
 
         buildoutputs { '%{cfg.targetdir}/assets/shaders/%{file.basename}.glsl' }
 
-project "Metal"
-    kind "StaticLib"
-    language "C++"
+project 'Metal'
+    kind 'StaticLib'
+    language 'C++'
 
-    filter "system:macosx"
+    filter 'system:macosx'
         files {
-            "src/metal/**.h",
-            "src/metal/**.hh",
-            "src/metal/**.mm",
-            "src/metal/**.metal" }
+            'src/metal/**.h',
+            'src/metal/**.hh',
+            'src/metal/**.mm',
+            'src/metal/**.metal' }
         links {
-            "CoreFoundation.framework",
-            "Cocoa.framework",
-            "Metal.framework",
-            "MetalKit.framework",
-            "IOKit.framework",
-            "CoreVideo.framework" }
+            'CoreFoundation.framework',
+            'Cocoa.framework',
+            'Metal.framework',
+            'MetalKit.framework',
+            'IOKit.framework',
+            'CoreVideo.framework' }
 
-project "Vulkan"
-    kind "StaticLib"
-    language "C++"
+project 'Vulkan'
+    kind 'StaticLib'
+    language 'C++'
 
-    filter "system:macosx"
-        files { "src/dummy.cpp" }
+    filter 'system:macosx'
+        files { 'src/dummy.cpp' }
 
-    filter "system:not macosx"
-        files { "src/vulkan/**.h", "src/vulkan/**.cpp" }
+    filter 'system:not macosx'
+        files { 'src/vulkan/**.h', 'src/vulkan/**.cpp' }

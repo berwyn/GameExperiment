@@ -1,19 +1,27 @@
 #include "ShaderLoader.h"
 #include "Platform.h"
+#include "../main/UTFHelpers.h"
 
 #include <stdio.h>
-#include <sys/mman.h>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include <libgen.h>
 #include <cstdio>
 
+#ifndef WINDOWS
+
+#include <libgen.h>
+#include <sys/mman.h>
+
+#endif
+
 #ifdef __APPLE__
+
 #include <mach-o/dyld.h>
+
 #endif
 
 #include "../main/Logger.h"
@@ -48,7 +56,7 @@ std::string ShaderLoader::loadSource(std::string* name)
 {
     std::string basePath;
     
-#ifdef __APPLE__
+#if defined(APPLE)
     
     char nsBasePath[PATH_MAX];
     uint32_t size = sizeof(nsBasePath);
@@ -61,7 +69,12 @@ std::string ShaderLoader::loadSource(std::string* name)
     basePath = dirname(nsBasePath);
 
 #elif defined(WINDOWS)
-    // TODO: Implement Windows version :(
+
+    HMODULE module = GetModuleHandle(NULL);
+    WCHAR path[MAX_PATH];
+    GetModuleFileName(module, path, MAX_PATH);
+    basePath = narrow(path);
+
 #else
     // TODO: Implement Linux version :(
 #endif

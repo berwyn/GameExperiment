@@ -1,7 +1,7 @@
 #include <thread>
 
 #include "DXRenderer.h"
-#include "UTFHelpers.h"
+#include "../main/UTFHelpers.h"
 #include "../main/Logger.h"
 
 // Forward declaration because c++ blows goats
