@@ -9,7 +9,7 @@
 #endif
 
 #ifndef APPLE
-#include "GL\glew.h"
+#include "GL/glew.h"
 #endif
 
 #define GLFW_INCLUDE_NONE

@@ -63,8 +63,6 @@ void Game::Loop()
 {
     while (!engine->ShouldHalt)
     {
-        using namespace std::literals;
-        // TODO: Do real things here
         engine->Frame();
     }
 }

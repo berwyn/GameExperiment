@@ -5,7 +5,7 @@
 
 #include "Platform.h"
 
-#include "../main/engine/Renderer.h"
+#include "../main/engine/IRenderer.h"
 #include "Shaders/Triangle.h"
 
 class GLRenderer : public IRenderer
@@ -17,15 +17,11 @@ public:
     ~GLRenderer();
 
     bool Init(uint32_t width, uint32_t height) override;
-    void Draw() override;
+    void Draw(int64_t, Game::Renderer::SceneGraph&) override;
     
 private:
     
     GLFWwindow* window;
     TriangleShader shader;
-    
-    // FIXME: Stop rendering a dumb triangle :)
-    uint32_t vao;
-    uint32_t vertexBuffer;
 
 };

@@ -5,6 +5,10 @@ workspace 'GameExperiment'
     configurations { 'Debug', 'Release' }
     location 'build/'
 
+    files { '.editorconfig' }
+    includedirs { 'src', 'vendor/imgui' }
+    architecture 'x86_64'
+
     configuration 'Debug'
         optimize 'Debug'
         defines { 'DEBUG' }
@@ -14,18 +18,21 @@ workspace 'GameExperiment'
     configuration 'Release'
         targetdir 'bin/release'
 
-    filter 'system:windows'
-        architecture 'x86_64'
-        defines { 'WIN32', 'WINDOWS', '_WINDOWS', '_UNICODE', 'UNICODE' }
+    -- Note:
+    -- We're using C++17 here for the new filesystem APIs
+    -- as well as the condensed namespaces. After C++17
+    -- is finalised, these flags should be updated as
+    -- clang/msvc standardise them
 
     filter 'system:macosx'
-        architecture 'x86_64'
         defines { 'APPLE' }
-        buildoptions { '-std=c++14' }
+        buildoptions { '-std=c++1z' }
         includedirs { '/usr/local/Cellar/glfw3/3.1.2/include' }
         libdirs { '/usr/local/Cellar/glfw3/3.1.2/lib' }
 
     filter 'system:windows'
+        defines { 'WIN32', 'WINDOWS', '_WINDOWS', '_UNICODE', 'UNICODE' }
+        buildoptions { '/std:c++latest' }
         includedirs {
             'vendor/glfw3/include',
             appLocal .. '\\scoop\\apps\\glew\\1.13.0\\include' }

@@ -3,6 +3,8 @@
 #include "../main/engine/Engine.h"
 #include "GLRenderer.h"
 
+using namespace Game::Renderer;
+
 GLRenderer::~GLRenderer()
 {
     glfwTerminate();
@@ -43,7 +45,7 @@ bool GLRenderer::Init(uint32_t width, uint32_t height)
     return true;
 }
 
-void GLRenderer::Draw()
+void GLRenderer::Draw(int64_t delta, SceneGraph& sceneGraph)
 {
     if(glfwWindowShouldClose(window))
     {
