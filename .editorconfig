@@ -1,6 +1,10 @@
 root = true
 
-[*.{h, hpp, mm, cpp, lua}]
+[*]
 charset = utf-8
+end_of-line = lf
+insert_final_newline = true
+
+[*.{h,hpp,mm,cpp,lua}]
 indent_style = space
 indent_size = 4
