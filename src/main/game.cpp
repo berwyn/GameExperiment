@@ -1,6 +1,6 @@
 #include <cstdlib>
 
-namespace game
+namespace Game
 {
     enum EngineState
     {
@@ -35,7 +35,7 @@ namespace game
 
         bool shouldClose()
         {
-            // TODO: Actually determin if game should close
+            // TODO: Actually determine if game should close
             return false;
         }
 

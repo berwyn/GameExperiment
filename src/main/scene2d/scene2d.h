@@ -2,15 +2,15 @@
 
 #include <stdint.h>
 
-namespace Game
+namespace Game::Scene2D
 {
-    struct Scene2DCoordinate
+    struct Coordinate
     {
         uint32_t x, y;
     };
 
-    struct Scene2DSegment
+    struct Segment
     {
-
+        uint32_t width, height;
     };
 }

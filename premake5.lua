@@ -46,3 +46,27 @@ project 'Game'
             '/SUBSYSTEM:windows',
             '/ENTRY:mainCRTStartup'
         }
+
+if(os.is('windows')) then
+    project 'DirectX'
+        kind 'SharedLib'
+        language 'C++'
+
+        files { 'src/directx/*.h', 'src/directx/*.cpp' }
+end
+
+if(os.is("macosx")) then
+    project 'Metal'
+        kind 'SharedLib'
+        language 'C++'
+
+        files { 'src/metal/**.hh', 'src/metal/**.mm' }
+end
+
+if(os.is('not macosx')) then
+    project 'Vulkan'
+        kind 'SharedLib'
+        language 'C++'
+
+        files { 'src/vulkan/*.h', 'src/vulkan/*.cpp' }
+end
