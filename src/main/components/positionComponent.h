@@ -9,7 +9,7 @@ namespace Game::Components
 
         inline PositionComponent() : Component()
         {
-            phase = ::ComponentPhase::Position
+            phase = ComponentPhase::Position;
             x = y = z = 0;
         }
         

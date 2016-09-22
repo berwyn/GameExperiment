@@ -63,7 +63,7 @@ if(os.is("macosx")) then
         files { 'src/metal/**.hh', 'src/metal/**.mm' }
 end
 
-if(os.is('not macosx')) then
+if(not os.is('macosx')) then
     project 'Vulkan'
         kind 'SharedLib'
         language 'C++'

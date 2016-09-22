@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "componentManager.h"
+#include "components/positionComponent.h"
 #include "scene2d/scene2d.h"
 #include "scene3d/scene3d.h"
 
@@ -11,17 +12,17 @@ namespace Game
     class SceneGraph
     {
     public:
-        inline SceneGraph() {} : em();
+        inline SceneGraph() : em() {}
         inline ~SceneGraph() {}
 
-    private:
+    protected:
         EntityManager em;
     };
 
     ///
     /// \brief Scene component for 2D games
     ///
-    class Scene2D : public SceneGraph
+    class SceneGraph2D : public SceneGraph
     {
     public:
         ///
@@ -39,17 +40,17 @@ namespace Game
         /// in order to accomodate them inside the viewport.
         /// __TODO:__ Document how to disable resizing or lock aspect ratio.
         ///
-        inline Scene2D(uint32_t width, uint32_t height) : SceneGraph()
+        inline SceneGraph2D(uint32_t width, uint32_t height) : SceneGraph()
         {
             this->width = width;
             this->height = height;
             screenspace = std::unordered_map<Scene2D::Coordinate, Scene2D::Segment>(width * height);
 
-            for(auto x = 0; x < width; x++)
+            for(uint32_t x = 0; x < width; x++)
             {
-                for(auto y = 0; y < width; y++)
+                for(uint32_t y = 0; y < height; y++)
                 {
-                    auto coord = Scene2DCoordinate{ x, y };
+                    auto coord = Scene2D::Coordinate{ x, y };
                     screenspace[coord] = Scene2D::Segment{};
                 }
             }
@@ -66,31 +67,34 @@ namespace Game
         /// segments are of a fixed size, but the number used to cover the
         /// viewport can fluctuate to fill the player's view.'
         ///
-        inline Scene2D(Scene2D::Segment& reference): SceneGraph()
+        inline SceneGraph2D(Scene2D::Segment& reference): SceneGraph()
         {
             
         }
 
-        inline ~Scene2D() {}
+        inline ~SceneGraph2D() {}
 
     private:
         uint32_t width, height;
-        std::unordered_map<Scene2DC::oordinate, Scene2D::Segment> screenspace;
+        std::unordered_map<Scene2D::Coordinate, Scene2D::Segment> screenspace;
     };
 
     ///
     /// \brief A scene for 3D games
     ///
-    class Scene3D : public SceneGraph
+    class SceneGraph3D : public SceneGraph
     {
     public:
         ///
         /// \brief Creates a new Scene3D
         ///
-        inline Scene3D() : SceneGraph()
+        inline SceneGraph3D() : SceneGraph()
         {
-
+            // FIXME: Don't create a graph here, you dofus
+            auto cube = Entity();
+            auto pos = Components::PositionComponent();
+            em.addEntity(cube);
         }
-        inline ~Scene3D() {}
+        inline ~SceneGraph3D() {}
     };
 }

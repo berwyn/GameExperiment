@@ -1,3 +1,5 @@
+#include <vector>
+
 namespace Game
 {
     ///
@@ -28,6 +30,10 @@ namespace Game
     class Entity
     {
     public:
+
+        inline Entity() : components() {}
+        inline ~Entity() {}
+
         std::vector<Component> components;
     };
 
@@ -37,7 +43,13 @@ namespace Game
     ///
     class EntityManager
     {
+    public:
+        inline void addEntity(Entity& entity)
+        {
+            entities.emplace_back(entity);
+        }
+
     private:
-        std::vector<Entity> entity;
+        std::vector<Entity> entities;
     };
 }

@@ -1,5 +1,7 @@
 #include <cstdlib>
 
+#include "sceneGraph.h"
+
 namespace Game
 {
     enum EngineState
@@ -56,12 +58,13 @@ namespace Game
 
     private:
         EngineState state;
+        SceneGraph scene;
     };
 }
 
 int main(int argc, char* argv[])
 {
-    auto game = game::Game();
+    auto game = Game::Game();
     game.init();
     while (!game.shouldClose())
     {
