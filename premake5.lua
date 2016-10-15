@@ -1,6 +1,10 @@
+local vkVersion = '1.0.21.1'
+
 workspace 'GameExperiment'
     configurations { 'Debug', 'Release' }
     location 'build/'
+
+    includedirs { 'src' }
 
     files { '.editorconfig' }
     architecture 'x86_64'
@@ -52,6 +56,9 @@ if(os.is('windows')) then
         kind 'SharedLib'
         language 'C++'
 
+        links { 'dxgi.lib' }
+
+        defines { 'EXPORTED' }
         files { 'src/directx/*.h', 'src/directx/*.cpp' }
 end
 
@@ -60,6 +67,7 @@ if(os.is("macosx")) then
         kind 'SharedLib'
         language 'C++'
 
+        defines { 'EXPORTED' }
         files { 'src/metal/**.hh', 'src/metal/**.mm' }
 end
 
@@ -68,5 +76,17 @@ if(not os.is('macosx')) then
         kind 'SharedLib'
         language 'C++'
 
+        sysincludedirs {
+            'vendor/vulkan-hpp',
+            'vendor/glfw3/include',
+        }
+
+        if(os.is('windows')) then
+            sysincludedirs {
+                'C:/VulkanSDK/'..vkVersion..'/Include'
+            }
+        end
+
+        defines { 'EXPORTED' }
         files { 'src/vulkan/*.h', 'src/vulkan/*.cpp' }
 end

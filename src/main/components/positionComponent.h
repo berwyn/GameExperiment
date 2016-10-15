@@ -1,3 +1,4 @@
+#pragma once
 #include "../componentManager.h"
 
 namespace Game::Components

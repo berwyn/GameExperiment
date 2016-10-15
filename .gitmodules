@@ -7,3 +7,6 @@
 [submodule "vendor/imgui"]
 	path = vendor/imgui
 	url = git://github.com/ocornut/imgui.git
+[submodule "vendor/vulkan-hpp"]
+	path = vendor/vulkan-hpp
+	url = git://github.com/KhronosGroup/Vulkan-Hpp.git

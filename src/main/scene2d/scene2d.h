@@ -1,5 +1,4 @@
 #pragma once
-
 #include <stdint.h>
 
 namespace Game::Scene2D
