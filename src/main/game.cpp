@@ -1,66 +1,15 @@
 #include <cstdlib>
 
-#include "sceneGraph.h"
+#include "game.h"
+#include "platform.h"
 
-namespace Game
-{
-    enum EngineState
-    {
-        Preparing,
-        Prepared,
-        Running,
-        Stopping,
-        Stopped,
-        Error
-    };
-
-    class Game
-    {
-    public:
-        Game()
-        {
-            state = EngineState::Preparing;
-            // TODO: Setup state
-        }
-
-        ~Game()
-        {
-            // TODO: Local cleanup
-            state = EngineState::Stopped;
-        }
-
-        void init()
-        {
-            // TODO: Renderer initialisation
-            state = EngineState::Prepared;
-        }
-
-        bool shouldClose()
-        {
-            // TODO: Actually determine if game should close
-            return false;
-        }
-
-        void render()
-        {
-            if (state == EngineState::Prepared)
-            {
-                state = EngineState::Running;
-                // TODO: Handle first-run situation
-            }
-        }
-
-        void terminate()
-        {
-            state = EngineState::Stopping;
-            // TODO Halt the renderer
-        }
-
-    private:
-        EngineState state;
-        SceneGraph scene;
-    };
-}
+#ifdef APPLE
+    #define DYLIB "libMetal.dylib"
+#elif defined(LINUX)
+    #define DYLIB "libmetal.so"
+#else
+    #define DYLIB "libmetal.dll"
+#endif
 
 int main(int argc, char* argv[])
 {
@@ -72,4 +21,52 @@ int main(int argc, char* argv[])
     }
     game.terminate();
     return EXIT_SUCCESS;
+}
+
+namespace Game
+{
+    Game::Game()
+    {
+        auto str = std::string(DYLIB);
+        auto res = Platform::loadDylib(str, dylib);
+        if(res == false)
+        {
+            // TODO: Handle bind fail
+        }
+        state = EngineState::Preparing;
+        // TODO: Setup state
+    }
+    
+    Game::~Game()
+    {
+        // TODO: Local cleanup
+        state = EngineState::Stopped;
+    }
+    
+    auto Game::init() -> void
+    {
+        // TODO: Renderer initialisation
+        state = EngineState::Prepared;
+    }
+    
+    auto Game::shouldClose() -> bool
+    {
+        // TODO: Actually determine if game should close
+        return false;
+    }
+    
+    auto Game::render() -> void
+    {
+        if (state == EngineState::Prepared)
+        {
+            state = EngineState::Running;
+            // TODO: Handle first-run situation
+        }
+    }
+    
+    auto Game::terminate() -> void
+    {
+        state = EngineState::Stopping;
+        // TODO Halt the renderer
+    }
 }

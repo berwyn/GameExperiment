@@ -39,6 +39,7 @@ project 'Game'
     kind 'ConsoleApp'
     language 'C++'
 
+    defines { "IMPORTED" }
     files { 'src/main/**.h', 'src/main/**.cpp' }
 
     -- Full path so NSight can function
@@ -69,6 +70,11 @@ if(os.is("macosx")) then
 
         defines { 'EXPORTED' }
         files { 'src/metal/**.hh', 'src/metal/**.mm' }
+        links {
+            'AppKit.framework',
+            'Metal.framework',
+            'MetalKit.framework'
+        }
 end
 
 if(not os.is('macosx')) then

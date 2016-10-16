@@ -1,47 +1,26 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <vector>
 
 namespace Game
 {
-    struct Rect
-    {
-        uint32_t height, width, x, y;
-    };
-
+    ///
+    /// \brief
+    ///     An enum of supported window types
+    ///
     enum WindowType
     {
-        Windowed,
-        Borderless,
-        Fullscreen
+        Windowed,   ///< A standard titled window
+        Borderless, ///< A window which fills the display with no chrome
+        Fullscreen  ///< Exclusive fullscreen
     };
 
-    struct Window
-    {
-    public:
-        Rect bounds, viewport;
-        WindowType type;
-    };
-
-    struct Display
-    {
-    public:
-        uint32_t width, height;
-        uint32_t density;
-        uint32_t aspect;
-        uint32_t refreshRate;
-        bool isHDR;
-    };
-
-    struct Device
-    {
-    public:
-        uint64_t score;
-        std::vector<Display> displays;
-        void* nativeDevice;
-    };
-
+    ///
+    /// \brief
+    ///     An abstraction over rendering tasks
+    ///
     class Renderer
     {
     public:
@@ -49,29 +28,24 @@ namespace Game
         virtual ~Renderer() {}
 
         ///
-        /// \brief Iterates over the available graphics
-        ///        devices and chooses the most suitable
-        ///        one.
+        /// \brief
+        ///     Initialise the the renderer and allocate all basic objects
+        /// \return
+        ///     a boolean indicating whether the operation was successful
         ///
-        virtual Device selectDevice() = 0;
-
+        virtual bool setup() = 0;
+        
         ///
-        /// \brief Iterates over the display devices
-        ///        attached to the selected device,
-        ///        and selects the most appropriate one.
+        /// \brief
+        ///     Create the window and display it to the user
         ///
-        /// \param[in] device The device to check adapters for
+        /// \param[in] width The width of the window at 96dpi
+        /// \param[in] height The height of the window at 96dpi
+        /// \param[in] type What window type to create
         ///
-        virtual Display selectDisplay(Device& device) = 0;
-
+        /// \return
+        ///     a boolean indicating whether the operation was successful
         ///
-        /// \brief With a given device, display, and type
-        ///        creates the window.
-        ///
-        /// \param[in] device The device to create the window on
-        /// \param[in] display The display to create the window on
-        /// \param[in] type What type of window to create
-        ///
-        virtual Window createWindow(Device& device, Display& display, WindowType type) = 0;
+        virtual bool createWindow(uint32_t width, uint32_t height, WindowType type) = 0;
     };
 }
