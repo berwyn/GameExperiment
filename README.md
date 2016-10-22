@@ -14,7 +14,6 @@ on my calculus and linear algebra.
 
 #### OSX
 1. XCode
-2. GLFW (`$ brew install glfw`)
 3. Premake5 (`$ brew install premake5`)
 
 ---
@@ -30,7 +29,7 @@ PS> msbuild build/GameExperiment.sln
 alternatively, to open in VS2015
 ```posh
 PS> premake5 vs2015
-PS> devenv build/GameExperiment.sln
+PS> start build/GameExperiment.sln
 ```
 
 #### OSX
@@ -53,8 +52,7 @@ $ open build/GameExperiment.xcworkspace
  |
  |-src              // Source code
  | |- main          // Platform agnostic and game logic code
- | |- directx       // DirectX 11 Renderer
- | |- opengl        // OpenGL 3.2 Renderer
+ | |- directx       // DirectX 12 Renderer
  | |- metal         // Metal Renderer
  | `- vulkan        // Vulkan Renderer
  |-bin              // Compiled binaries
@@ -90,9 +88,9 @@ A: I test Windows 10 and OSX El Capitan. If it runs elsewhere, awesome!
 
 Q: `What graphics pipeline do you use?`
 
-A: DirectX 11 on Windows and OpenGL 3.2 on OSX. Eventually, I might look
-and using DirectX 12 or Vulkan (respectively), but for now that's entirely
-too low-level for my skillset.
+A: DirectX 12 for Windows, Metal for macOS, and Vulkan for both Windows and Linux.
+Eventually, I might look into OGL ES or Vulkan for Android or Metal for iOS, But
+mobile targets aren't part of my agenda currently
 
 Q: `What scripting engine are you using?`
 
